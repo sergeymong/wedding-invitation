@@ -965,47 +965,47 @@ export default function App() {
             className="h-full w-full flex flex-col justify-center px-6 md:px-16"
           >
             {/* Countdown */}
-            <div className="mb-8 md:mb-10">
-              <p className="font-serif text-olive text-base md:text-lg uppercase tracking-widest mb-1">
+            <div className="mb-6 md:mb-8">
+              <p className="font-serif text-olive text-lg md:text-xl uppercase tracking-widest mb-1">
                 До встречи осталось
               </p>
               <p className="font-serif text-[clamp(4rem,14vw,8rem)] font-semibold text-chocolate leading-none">
                 {getDaysUntilWedding()}
               </p>
-              <p className="font-hand text-olive text-[clamp(1.5rem,5vw,2rem)]">дней</p>
+              <p className="font-hand text-olive text-[clamp(1.75rem,6vw,2.5rem)]">дней</p>
             </div>
 
-            {/* Контент без плиток — увеличенные шрифты */}
-            <div className="space-y-8 md:space-y-10">
+            {/* Контент без плиток — КРУПНЫЕ шрифты */}
+            <div className="space-y-6 md:space-y-8">
               {/* Что надеть */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.5rem,5vw,2rem)] mb-3">Что надеть</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1.25rem,4vw,1.5rem)] mb-4">Приходите в этих оттенках:</p>
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.75rem,6vw,2.5rem)] mb-2">Что надеть</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1.4rem,4.5vw,1.75rem)] mb-3">Приходите в этих оттенках:</p>
                 <div className="flex gap-4">
-                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
-                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
-                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
-                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
-                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
                 </div>
-                <p className="font-hand text-olive text-[clamp(1.1rem,3.5vw,1.25rem)] mt-3">Строгой проверки не будет</p>
+                <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.5rem)] mt-2">Строгой проверки не будет</p>
               </div>
               
               {/* Подарки */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.5rem,5vw,2rem)] mb-3">Подарки</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1.25rem,4vw,1.5rem)]">
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.75rem,6vw,2.5rem)] mb-2">Подарки</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1.4rem,4.5vw,1.75rem)]">
                   Мы мечтаем о своём жилье. Благодарны любому вкладу, который приблизит нас к этому.
                 </p>
               </div>
               
               {/* Что взять */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.5rem,5vw,2rem)] mb-3">Что взять с собой</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1.25rem,4vw,1.5rem)]">
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.75rem,6vw,2.5rem)] mb-2">Что взять с собой</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1.4rem,4.5vw,1.75rem)]">
                   Хорошее настроение, сменную обувь для танцев и что-то тёплое на вечер.
                 </p>
-                <p className="font-hand text-olive text-[clamp(1.1rem,3.5vw,1.25rem)] mt-3">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
+                <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.5rem)] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
               </div>
             </div>
           </motion.div>
