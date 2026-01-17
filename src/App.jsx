@@ -29,7 +29,7 @@ const screens = [
   'rsvp'             // 12
 ]
 
-// Компонент Fireflies для экрана 1 — спокойные светлячки
+// Компонент Fireflies для экрана 1 — больше светлячков
 function Fireflies() {
   const canvasRef = useRef(null)
 
@@ -48,16 +48,16 @@ function Fireflies() {
     const createFirefly = () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      size: Math.random() * 2 + 1.5,
-      speedX: (Math.random() - 0.5) * 0.2,
-      speedY: (Math.random() - 0.5) * 0.2,
-      opacity: Math.random() * 0.4 + 0.2,
-      pulseSpeed: Math.random() * 0.008 + 0.004,
+      size: Math.random() * 2.5 + 1.5,
+      speedX: (Math.random() - 0.5) * 0.3,
+      speedY: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.5 + 0.25,
+      pulseSpeed: Math.random() * 0.012 + 0.006,
       pulseOffset: Math.random() * Math.PI * 2,
     })
 
     const initFireflies = () => {
-      fireflies = Array.from({ length: 15 }, createFirefly)
+      fireflies = Array.from({ length: 30 }, createFirefly)
     }
 
     const animate = (time) => {
@@ -71,13 +71,13 @@ function Fireflies() {
         const pulse = Math.sin(time * f.pulseSpeed + f.pulseOffset) * 0.3 + 0.7
         const currentOpacity = f.opacity * pulse
 
-        const gradient = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.size * 4)
+        const gradient = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.size * 5)
         gradient.addColorStop(0, `rgba(201, 162, 39, ${currentOpacity})`)
         gradient.addColorStop(0.4, `rgba(201, 162, 39, ${currentOpacity * 0.5})`)
         gradient.addColorStop(1, 'rgba(201, 162, 39, 0)')
 
         ctx.beginPath()
-        ctx.arc(f.x, f.y, f.size * 4, 0, Math.PI * 2)
+        ctx.arc(f.x, f.y, f.size * 5, 0, Math.PI * 2)
         ctx.fillStyle = gradient
         ctx.fill()
       })
@@ -156,32 +156,32 @@ function Snowfall() {
   return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
 }
 
-// Компонент Hearts для финального экрана
+// Компонент Hearts для финального экрана — на весь экран
 function FloatingHearts() {
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {[...Array(6)].map((_, i) => (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {[...Array(12)].map((_, i) => (
         <motion.div
           key={i}
           initial={{ 
-            y: '100vh', 
-            x: `${15 + i * 15}vw`,
+            y: '110vh', 
+            x: `${5 + i * 8}vw`,
             opacity: 0,
             scale: 0.5
           }}
           animate={{ 
-            y: '-20vh',
-            opacity: [0, 1, 1, 0],
+            y: '-10vh',
+            opacity: [0, 0.6, 0.6, 0],
             scale: [0.5, 1, 1, 0.8]
           }}
           transition={{ 
-            duration: 4 + i * 0.5,
+            duration: 5 + i * 0.3,
             repeat: Infinity,
-            delay: i * 0.8,
+            delay: i * 0.5,
             ease: "easeOut"
           }}
-          className="absolute text-marsala/40"
-          style={{ fontSize: `${20 + i * 5}px` }}
+          className="absolute text-marsala/30"
+          style={{ fontSize: `${18 + (i % 4) * 8}px` }}
         >
           ♥
         </motion.div>
@@ -309,9 +309,9 @@ export default function App() {
   }
 
   const getRatingLabel = (value) => {
-    if (value >= 6) return '🎉 Ура, ждём!'
-    if (value >= 3) return '🤔 Понимаем, подумайте! Будем рады, если получится'
-    if (value >= 1) return '😢 Эх, будем скучать... Но всё равно ждём, вдруг передумаете!'
+    if (value >= 6) return 'Ура, ждём!'
+    if (value >= 3) return 'Понимаем, подумайте! Будем рады, если получится'
+    if (value >= 1) return 'Жаль... Но всё равно ждём, вдруг получится!'
     return ''
   }
 
@@ -590,20 +590,23 @@ export default function App() {
                         key={option.id}
                         onClick={() => handleHighfiveAnswer(option.id)}
                         disabled={highfiveAnswer !== null}
-                        className={`flex flex-col items-center gap-2 border-2 rounded-xl transition-all overflow-hidden bg-cream ${
+                        className={`relative border-2 rounded-xl transition-all overflow-hidden ${
                           highfiveAnswer === option.id
-                            ? 'border-marsala bg-marsala/10'
+                            ? 'border-marsala'
                             : 'border-chocolate hover:border-marsala'
                         } ${highfiveAnswer && highfiveAnswer !== option.id ? 'opacity-40' : ''}`}
                       >
                         <img 
                           src={option.img} 
                           alt={option.label}
-                          className="w-32 h-28 md:w-40 md:h-32 object-cover"
+                          className="w-36 h-36 md:w-44 md:h-44 object-cover"
                         />
-                        <span className="font-serif text-[clamp(1rem,3vw,1.25rem)] text-chocolate pb-3 px-4">
-                          {option.label}
-                        </span>
+                        {/* Надпись поверх картинки */}
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-chocolate/80 to-transparent py-3 px-2">
+                          <span className="font-serif text-[clamp(0.9rem,3vw,1.1rem)] text-cream">
+                            {option.label}
+                          </span>
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -632,7 +635,7 @@ export default function App() {
                       Она протянула руку,
                     </p>
                     <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-chocolate">
-                      а он — хлопнул
+                      а он — дал пять
                     </p>
                   </div>
                   
@@ -945,7 +948,7 @@ export default function App() {
             className="h-full w-full flex flex-col justify-center px-6 md:px-16"
           >
             {/* Countdown */}
-            <div className="mb-6">
+            <div className="mb-8 md:mb-10">
               <p className="font-serif text-olive text-sm uppercase tracking-widest mb-1">
                 До встречи осталось
               </p>
@@ -955,37 +958,37 @@ export default function App() {
               <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.5rem)]">дней</p>
             </div>
 
-            {/* Карточки — без фоновых картинок */}
-            <div className="grid grid-cols-2 gap-3 md:gap-4">
+            {/* Контент без плиток */}
+            <div className="space-y-6 md:space-y-8">
               {/* Что надеть */}
-              <div className="bg-white/80 rounded-xl p-4">
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Что надеть</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)] mb-2">Приходите в этих оттенках:</p>
-                <div className="flex gap-2">
-                  <span className="w-6 h-6 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
-                  <span className="w-6 h-6 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
-                  <span className="w-6 h-6 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
-                  <span className="w-6 h-6 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
-                  <span className="w-6 h-6 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
+              <div>
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.25rem,4vw,1.5rem)] mb-2">Что надеть</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1rem,3.5vw,1.25rem)] mb-3">Приходите в этих оттенках:</p>
+                <div className="flex gap-3">
+                  <span className="w-8 h-8 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
+                  <span className="w-8 h-8 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
+                  <span className="w-8 h-8 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
+                  <span className="w-8 h-8 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
+                  <span className="w-8 h-8 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
                 </div>
-                <p className="font-hand text-olive text-[clamp(0.8rem,2.5vw,0.9rem)] mt-2">Строгой проверки не будет 😉</p>
+                <p className="font-hand text-olive text-[clamp(0.9rem,3vw,1rem)] mt-2">Строгой проверки не будет</p>
               </div>
               
               {/* Подарки */}
-              <div className="bg-white/80 rounded-xl p-4">
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Подарки</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)]">
+              <div>
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.25rem,4vw,1.5rem)] mb-2">Подарки</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1rem,3.5vw,1.25rem)]">
                   Мы мечтаем о своём жилье. Благодарны любому вкладу, который приблизит нас к этому.
                 </p>
               </div>
               
               {/* Что взять */}
-              <div className="bg-white/80 rounded-xl p-4 col-span-2">
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Что взять с собой</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)]">
-                  ✓ Хорошее настроение · ✓ Сменную обувь для танцев · ✓ Что-то тёплое на вечер
+              <div>
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.25rem,4vw,1.5rem)] mb-2">Что взять с собой</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1rem,3.5vw,1.25rem)]">
+                  Хорошее настроение, сменную обувь для танцев и что-то тёплое на вечер.
                 </p>
-                <p className="font-hand text-olive text-[clamp(0.8rem,2.5vw,0.9rem)] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
+                <p className="font-hand text-olive text-[clamp(0.9rem,3vw,1rem)] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
               </div>
             </div>
           </motion.div>
@@ -1058,7 +1061,7 @@ export default function App() {
                   rel="noopener noreferrer"
                   className="inline-block font-serif text-cream bg-olive py-2 px-4 rounded-lg text-[clamp(0.9rem,3vw,1rem)]"
                 >
-                  💬 Бот ответит
+                  Бот ответит
                 </a>
               </div>
 
@@ -1083,7 +1086,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full flex flex-col justify-center px-6 md:px-16 relative"
           >
             {!formSubmitted ? (
               <>
@@ -1247,34 +1250,36 @@ export default function App() {
                 </form>
               </>
             ) : (
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-center relative"
-              >
+              <>
                 <FloatingHearts />
                 
-                <motion.p 
-                  initial={{ y: 20 }}
-                  animate={{ y: 0 }}
-                  className="font-serif text-[clamp(3rem,10vw,6rem)] font-semibold text-chocolate mb-4"
-                >
-                  {formData.rating >= 5 ? '💕 Ждём вас!' : '💌 Спасибо!'}
-                </motion.p>
-                <p className="font-hand text-olive text-[clamp(1.5rem,5vw,2rem)] mb-6">
-                  {formData.rating >= 5 
-                    ? 'Будет здорово увидеться!' 
-                    : 'Если планы изменятся — возвращайтесь'}
-                </p>
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.5rem)]"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="relative z-10"
                 >
-                  Софья и Сергей ♥
+                  <motion.p 
+                    initial={{ y: 20 }}
+                    animate={{ y: 0 }}
+                    className="font-serif text-[clamp(3rem,10vw,6rem)] font-semibold text-chocolate mb-4"
+                  >
+                    {formData.rating >= 5 ? 'Ждём вас!' : 'Спасибо!'}
+                  </motion.p>
+                  <p className="font-hand text-olive text-[clamp(1.5rem,5vw,2rem)] mb-6">
+                    {formData.rating >= 5 
+                      ? 'Будет здорово увидеться!' 
+                      : 'Если планы изменятся — возвращайтесь'}
+                  </p>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.5rem)]"
+                  >
+                    Софья и Сергей
+                  </motion.p>
                 </motion.div>
-              </motion.div>
+              </>
             )}
           </motion.div>
         )}
