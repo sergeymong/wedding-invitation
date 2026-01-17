@@ -1,5 +1,54 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+// ===== PRELOAD СИСТЕМА =====
+const allImages = [
+  '/images/frame.png',           // 0 - intro
+  '/images/story-start.png',     // 1 - story-start
+  '/images/first-meeting.png',   // 2 - first-meeting
+  '/images/handshake-btn.png',   // 3 - highfive
+  '/images/highfive-btn.png',    // 3 - highfive
+  '/images/highfive-result.png', // 3 - highfive
+  '/images/laughter.png',        // 4 - laughter
+  '/images/together.png',        // 5 - together
+  '/images/proposal.png',        // 6 - proposal
+  '/images/invitation.png',      // 7 - invitation
+  '/images/venue.png',           // 8 - venue
+]
+
+// Карта: какие картинки нужны для какого экрана
+const screenImages = {
+  0: ['/images/frame.png'],
+  1: ['/images/story-start.png'],
+  2: ['/images/first-meeting.png'],
+  3: ['/images/handshake-btn.png', '/images/highfive-btn.png', '/images/highfive-result.png'],
+  4: ['/images/laughter.png'],
+  5: ['/images/together.png'],
+  6: ['/images/proposal.png'],
+  7: ['/images/invitation.png'],
+  8: ['/images/venue.png'],
+}
+
+const loadedImages = new Set()
+
+const preloadImage = (src) => {
+  if (loadedImages.has(src)) return Promise.resolve()
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      loadedImages.add(src)
+      resolve()
+    }
+    img.onerror = resolve
+    img.src = src
+  })
+}
+
+const preloadScreen = (screenIndex) => {
+  const images = screenImages[screenIndex] || []
+  return Promise.all(images.map(preloadImage))
+}
+// ===== КОНЕЦ PRELOAD =====
 
 // Google Sheets API
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrJZh400sy4K-AoMhTzGgd_3TqE63YGv__NP30Cq5hrYm31csZw247FGnmC6HjoxlR/exec'
@@ -223,6 +272,23 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   const [touchStart, setTouchStart] = useState(0)
+
+  // ===== PRELOAD ИЗОБРАЖЕНИЙ =====
+  // При старте — загружаем первые 3 экрана
+  useEffect(() => {
+    Promise.all([
+      preloadScreen(0),
+      preloadScreen(1),
+      preloadScreen(2),
+    ])
+  }, [])
+
+  // При смене экрана — загружаем 2 следующих
+  useEffect(() => {
+    preloadScreen(currentScreen + 1)
+    preloadScreen(currentScreen + 2)
+  }, [currentScreen])
+  // ===== КОНЕЦ PRELOAD =====
 
   // Анимация счётчика дней
   useEffect(() => {
@@ -1284,7 +1350,7 @@ export default function App() {
                   </motion.p>
                   <p className="font-hand text-olive text-[clamp(1.5rem,5vw,2rem)] mb-6">
                     {formData.rating >= 5 
-                      ? 'Будет здорово увидеться!' 
+                      ? 'Будем рады разделить этот день с вами!' 
                       : 'Если планы изменятся — возвращайтесь'}
                   </p>
                   <motion.p
