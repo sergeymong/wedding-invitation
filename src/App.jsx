@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Получаем имя гостя из URL
@@ -10,28 +10,200 @@ const getGuestFromURL = () => {
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
   }
-  return 'Дорогой гость'
+  return ''
 }
 
 // Конфиг экранов
-const screens = ['intro', 'contrast', 'highfive', 'invitation', 'details', 'rsvp']
+const screens = [
+  'intro',           // 1
+  'story-start',     // 2
+  'first-meeting',   // 3
+  'highfive',        // 4
+  'laughter',        // 5
+  'together',        // 6
+  'proposal',        // 7
+  'invitation',      // 8
+  'venue',           // 9
+  'preparation',     // 10
+  'cheatsheet',      // 11
+  'rsvp'             // 12
+]
+
+// Компонент Fireflies для экрана 1
+function Fireflies() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let animationId
+    let fireflies = []
+
+    const resize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+
+    const createFirefly = () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3 + 2,
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5,
+      opacity: Math.random() * 0.5 + 0.3,
+      pulseSpeed: Math.random() * 0.02 + 0.01,
+      pulseOffset: Math.random() * Math.PI * 2,
+    })
+
+    const initFireflies = () => {
+      fireflies = Array.from({ length: 20 }, createFirefly)
+    }
+
+    const animate = (time) => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      fireflies.forEach(f => {
+        f.x += f.speedX
+        f.y += f.speedY
+        if (f.x < 0 || f.x > canvas.width) f.speedX *= -1
+        if (f.y < 0 || f.y > canvas.height) f.speedY *= -1
+
+        const pulse = Math.sin(time * f.pulseSpeed + f.pulseOffset) * 0.3 + 0.7
+        const currentOpacity = f.opacity * pulse
+
+        const gradient = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.size * 4)
+        gradient.addColorStop(0, `rgba(201, 162, 39, ${currentOpacity})`)
+        gradient.addColorStop(0.3, `rgba(201, 162, 39, ${currentOpacity * 0.5})`)
+        gradient.addColorStop(1, 'rgba(201, 162, 39, 0)')
+
+        ctx.beginPath()
+        ctx.arc(f.x, f.y, f.size * 4, 0, Math.PI * 2)
+        ctx.fillStyle = gradient
+        ctx.fill()
+      })
+      animationId = requestAnimationFrame(animate)
+    }
+
+    resize()
+    initFireflies()
+    animate(0)
+    window.addEventListener('resize', resize)
+    return () => {
+      cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
+}
+
+// Компонент Snowfall для экрана 7
+function Snowfall() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let animationId
+    let snowflakes = []
+
+    const resize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+
+    const createSnowflake = () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      size: Math.random() * 3 + 1,
+      speedY: Math.random() * 1 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.5,
+      opacity: Math.random() * 0.6 + 0.4,
+    })
+
+    const initSnowflakes = () => {
+      snowflakes = Array.from({ length: 80 }, createSnowflake)
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      snowflakes.forEach(f => {
+        f.y += f.speedY
+        f.x += f.speedX
+        if (f.y > canvas.height) {
+          f.y = -10
+          f.x = Math.random() * canvas.width
+        }
+        ctx.beginPath()
+        ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`
+        ctx.fill()
+      })
+      animationId = requestAnimationFrame(animate)
+    }
+
+    resize()
+    initSnowflakes()
+    animate()
+    window.addEventListener('resize', resize)
+    return () => {
+      cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
+}
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(0)
   const [guestName] = useState(getGuestFromURL)
-  const [highFiveTriggered, setHighFiveTriggered] = useState(false)
-  const [expandedCard, setExpandedCard] = useState(null)
+  
+  // Интерактив экран 2
+  const [storyAnswer, setStoryAnswer] = useState(null)
+  const [showStoryResult, setShowStoryResult] = useState(false)
+  
+  // Интерактив экран 4
+  const [highfiveAnswer, setHighfiveAnswer] = useState(null)
+  const [showHighfiveResult, setShowHighfiveResult] = useState(false)
+  
+  // Счётчик дней экран 6
+  const [displayDays, setDisplayDays] = useState(0)
+  
+  // RSVP форма
   const [formData, setFormData] = useState({
-    attending: null,
-    meal: '',
-    drinks: [],
-    dietary: '',
-    transfer: false,
+    name: guestName,
+    rating: null,
+    withGuest: false,
+    guestName: '',
+    food: [],
+    alcohol: [],
+    transport: '',
     accommodation: false,
-    comment: ''
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
+  
   const [touchStart, setTouchStart] = useState(0)
+
+  // Анимация счётчика дней
+  useEffect(() => {
+    if (currentScreen === 5) {
+      let current = 0
+      const target = 730
+      const increment = target / 60
+      const timer = setInterval(() => {
+        current += increment
+        if (current >= target) {
+          setDisplayDays(target)
+          clearInterval(timer)
+        } else {
+          setDisplayDays(Math.floor(current))
+        }
+      }, 16)
+      return () => clearInterval(timer)
+    }
+  }, [currentScreen])
 
   // Свайп навигация
   const handleTouchStart = (e) => setTouchStart(e.touches[0].clientY)
@@ -39,7 +211,6 @@ export default function App() {
   const handleTouchEnd = (e) => {
     const touchEnd = e.changedTouches[0].clientY
     const diff = touchStart - touchEnd
-    
     if (Math.abs(diff) > 50) {
       if (diff > 0 && currentScreen < screens.length - 1) {
         setCurrentScreen(prev => prev + 1)
@@ -49,28 +220,24 @@ export default function App() {
     }
   }
 
-  // Scroll навигация для десктопа
+  // Scroll навигация
   useEffect(() => {
-    const handleWheel = (e) => {
-      if (expandedCard) return
-      if (e.deltaY > 30 && currentScreen < screens.length - 1) {
-        setCurrentScreen(prev => prev + 1)
-      } else if (e.deltaY < -30 && currentScreen > 0) {
-        setCurrentScreen(prev => prev - 1)
-      }
-    }
     let timeout
-    const throttledWheel = (e) => {
+    const handleWheel = (e) => {
       if (!timeout) {
         timeout = setTimeout(() => {
-          handleWheel(e)
+          if (e.deltaY > 30 && currentScreen < screens.length - 1) {
+            setCurrentScreen(prev => prev + 1)
+          } else if (e.deltaY < -30 && currentScreen > 0) {
+            setCurrentScreen(prev => prev - 1)
+          }
           timeout = null
-        }, 800)
+        }, 600)
       }
     }
-    window.addEventListener('wheel', throttledWheel, { passive: true })
-    return () => window.removeEventListener('wheel', throttledWheel)
-  }, [currentScreen, expandedCard])
+    window.addEventListener('wheel', handleWheel, { passive: true })
+    return () => window.removeEventListener('wheel', handleWheel)
+  }, [currentScreen])
 
   // Keyboard навигация
   useEffect(() => {
@@ -85,11 +252,43 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [currentScreen])
 
-  const goToScreen = (index) => setCurrentScreen(index)
-  const handleSubmit = async (e) => {
+  const handleStoryAnswer = (answer) => {
+    setStoryAnswer(answer)
+    setTimeout(() => setShowStoryResult(true), 600)
+  }
+
+  const handleHighfiveAnswer = (answer) => {
+    setHighfiveAnswer(answer)
+    setTimeout(() => setShowHighfiveResult(true), 500)
+  }
+
+  const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('RSVP Data:', { guestName, ...formData })
+    console.log('RSVP:', formData)
     setFormSubmitted(true)
+  }
+
+  const getRatingColor = (value) => {
+    if (value >= 10) return '#5C6B4A'
+    if (value >= 7) return '#7A8B5A'
+    if (value >= 4) return '#C9A227'
+    return '#722F37'
+  }
+
+  const getRatingLabel = (value) => {
+    if (value >= 10) return 'Точно буду!'
+    if (value >= 7) return 'Скорее да'
+    if (value >= 4) return 'Надо подумать'
+    if (value >= 1) return 'Скорее нет'
+    return ''
+  }
+
+  // Подсчёт дней до свадьбы
+  const getDaysUntilWedding = () => {
+    const wedding = new Date('2026-08-30')
+    const today = new Date()
+    const diff = Math.ceil((wedding - today) / (1000 * 60 * 60 * 24))
+    return diff > 0 ? diff : 0
   }
 
   return (
@@ -99,405 +298,817 @@ export default function App() {
       onTouchEnd={handleTouchEnd}
     >
       {/* Навигация точками */}
-      <div className="fixed right-6 md:right-10 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
-        {screens.map((name, i) => (
+      <div className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
+        {screens.map((_, i) => (
           <button
             key={i}
-            onClick={() => goToScreen(i)}
-            className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 ${
-              currentScreen === i ? 'bg-marsala scale-125' : 'bg-olive/30 hover:bg-olive/50'
+            onClick={() => setCurrentScreen(i)}
+            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+              currentScreen === i ? 'bg-marsala scale-125' : 'bg-chocolate/20 hover:bg-chocolate/40'
             }`}
           />
         ))}
       </div>
 
       <AnimatePresence mode="wait">
-        {/* Экран 1: Intro */}
+        
+        {/* ========== ЭКРАН 1: INTRO ========== */}
         {currentScreen === 0 && (
           <motion.div
             key="intro"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex items-center justify-center p-6 md:p-12"
+            className="h-full w-full relative flex flex-col justify-center px-6 md:px-16"
           >
-            <div className="relative w-full max-w-sm md:max-w-lg lg:max-w-xl">
-              <img src="/images/frame.png" alt="" className="w-full h-auto" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 md:p-16">
-                <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-chocolate/60 text-sm md:text-base font-sans tracking-[0.3em] mb-4 md:mb-6"
-                >
-                  СВАДЬБА
-                </motion.p>
-                <motion.h1 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.7 }}
-                  className="font-serif text-5xl md:text-6xl lg:text-7xl text-chocolate text-center leading-tight"
-                >
-                  Сергей<br/>
-                  <span className="text-3xl md:text-4xl text-marsala">&amp;</span><br/>
-                  Софья
-                </motion.h1>
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1 }}
-                  className="mt-6 md:mt-8 text-xl md:text-2xl text-olive font-serif"
-                >
-                  30 августа 2026
-                </motion.p>
-              </div>
+            <Fireflies />
+            <img 
+              src="/images/frame.png" 
+              alt="" 
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0" 
+            />
+            <div className="relative z-20">
               <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-                className="text-center mt-6 text-chocolate/50 text-base md:text-lg font-sans animate-bounce"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-chocolate mb-6 md:mb-10"
               >
-                Листайте вниз ↓
+                Тут кое-что намечается
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="font-serif text-[clamp(4rem,15vw,10rem)] font-semibold text-chocolate leading-none tracking-tight"
+              >
+                30.08.2026
               </motion.p>
             </div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              className="absolute bottom-8 left-6 md:left-16 font-hand text-olive/70 text-lg md:text-xl z-20"
+            >
+              листай ↓
+            </motion.p>
           </motion.div>
         )}
 
-        {/* Экран 2: Контраст — история знакомства */}
+        {/* ========== ЭКРАН 2: STORY START ========== */}
         {currentScreen === 1 && (
           <motion.div
-            key="contrast"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className="h-full w-full flex flex-col items-center justify-center p-6 md:p-12"
+            key="story-start"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
           >
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-chocolate/60 text-sm md:text-base font-sans tracking-widest mb-4"
+              className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-10 md:mb-16"
             >
-              ЭТА ИСТОРИЯ НАЧИНАЛАСЬ НЕ ТАК, КАК ОБЫЧНО...
+              февраль 2023
             </motion.p>
-            <motion.img 
-              src="/images/story.png" 
-              alt="История знакомства" 
-              className="w-full max-w-md md:max-w-lg lg:max-w-xl rounded-2xl shadow-xl"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            />
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="mt-8 text-center max-w-lg"
+              transition={{ delay: 0.2 }}
+              className="mb-8 md:mb-12"
             >
-              <p className="text-xl md:text-2xl lg:text-3xl text-chocolate font-serif leading-relaxed">
-                Она посмотрела на фото — <span className="text-marsala italic">«точно нет»</span>
+              <p className="font-serif text-[clamp(2rem,7vw,4rem)] font-medium text-chocolate leading-tight">
+                Это история любви
               </p>
-              <p className="text-xl md:text-2xl lg:text-3xl text-chocolate font-serif leading-relaxed mt-4">
-                Он зашёл — она передумала до <span className="text-olive italic">«привет»</span>
+              <p className="font-serif text-[clamp(2rem,7vw,4rem)] font-medium text-chocolate leading-tight">
+                с первого взгляда
+              </p>
+              <p className="font-hand text-[clamp(1.5rem,5vw,2.5rem)] text-olive mt-2 italic">
+                Почти.
+              </p>
+            </motion.div>
+
+            {!showStoryResult ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-6">
+                  Она впервые увидела его фото и подумала:
+                </p>
+                <div className="flex flex-col gap-3 max-w-md">
+                  {['Интересно...', 'Может быть', 'Точно нет'].map((answer, i) => (
+                    <motion.button
+                      key={answer}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.6 + i * 0.1 }}
+                      onClick={() => handleStoryAnswer(answer)}
+                      disabled={storyAnswer !== null}
+                      className={`text-left font-serif text-[clamp(1.1rem,3.5vw,1.4rem)] py-4 px-6 border-2 rounded-lg transition-all ${
+                        storyAnswer === answer 
+                          ? 'bg-marsala text-cream border-marsala' 
+                          : 'border-chocolate text-chocolate hover:border-marsala'
+                      } ${storyAnswer && storyAnswer !== answer ? 'opacity-40' : ''}`}
+                    >
+                      {answer}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-4">
+                  Она впервые увидела его фото и подумала:
+                </p>
+                <p className="font-serif text-[clamp(3rem,10vw,6rem)] font-semibold text-marsala italic">
+                  «Точно нет»
+                </p>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ========== ЭКРАН 3: FIRST MEETING ========== */}
+        {currentScreen === 2 && (
+          <motion.div
+            key="first-meeting"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+          >
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-16 md:mb-24"
+            >
+              9 декабря 2023
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <p className="font-serif text-[clamp(1.75rem,6vw,3.5rem)] font-medium text-chocolate mb-2">
+                Он зашёл в квартиру
+              </p>
+              <p className="font-serif text-[clamp(2.5rem,9vw,5.5rem)] font-semibold text-chocolate leading-tight">
+                Ещё до приветствия
+              </p>
+              <p className="font-serif text-[clamp(2.5rem,9vw,5.5rem)] font-semibold text-marsala leading-tight">
+                она всё поняла
               </p>
             </motion.div>
           </motion.div>
         )}
 
-        {/* Экран 3: Пятюня */}
-        {currentScreen === 2 && (
+        {/* ========== ЭКРАН 4: HIGHFIVE ========== */}
+        {currentScreen === 3 && (
           <motion.div
             key="highfive"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col items-center justify-center p-6 md:p-12"
+            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
           >
-            <motion.div 
-              className="relative cursor-pointer"
-              onClick={() => setHighFiveTriggered(true)}
-              whileTap={{ scale: 1.02 }}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-10 md:mb-16"
             >
-              <motion.img 
-                src="/images/highfive.png" 
-                alt="Пятюня встретила ладонь" 
-                className="w-full max-w-md md:max-w-lg lg:max-w-xl rounded-2xl shadow-xl"
-                animate={highFiveTriggered ? { scale: [1, 1.03, 1], rotate: [0, -1, 1, 0] } : {}}
-                transition={{ duration: 0.5 }}
-              />
-              {highFiveTriggered && (
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                >
-                  {[...Array(12)].map((_, i) => (
-                    <motion.span
-                      key={i}
-                      initial={{ scale: 0, x: 0, y: 0 }}
-                      animate={{ 
-                        scale: [0, 1.5, 0],
-                        x: Math.cos(i * 30 * Math.PI / 180) * 120,
-                        y: Math.sin(i * 30 * Math.PI / 180) * 120,
-                        opacity: [1, 1, 0]
-                      }}
-                      transition={{ duration: 1.2, delay: i * 0.05 }}
-                      className="absolute text-3xl md:text-4xl"
+              минуту спустя
+            </motion.p>
+
+            {!showHighfiveResult ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-chocolate mb-2">
+                  Их первое взаимодействие
+                </p>
+                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-8">
+                  Нужно поздороваться. Как они это сделали?
+                </p>
+                <div className="flex gap-4 md:gap-6 flex-wrap">
+                  {[
+                    { id: 'handshake', emoji: '🤝', label: 'Рукопожатие' },
+                    { id: 'highfive', emoji: '✋', label: 'Дай пять' },
+                  ].map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => handleHighfiveAnswer(option.id)}
+                      disabled={highfiveAnswer !== null}
+                      className={`flex flex-col items-center gap-3 p-6 md:p-8 border-2 rounded-xl transition-all min-w-[120px] ${
+                        highfiveAnswer === option.id
+                          ? 'bg-marsala border-marsala'
+                          : 'border-chocolate hover:border-marsala'
+                      } ${highfiveAnswer && highfiveAnswer !== option.id ? 'opacity-40' : ''}`}
                     >
-                      ✨
-                    </motion.span>
+                      <span className="text-[clamp(2.5rem,8vw,4rem)]">{option.emoji}</span>
+                      <span className={`font-serif text-[clamp(1rem,3vw,1.25rem)] ${
+                        highfiveAnswer === option.id ? 'text-cream' : 'text-chocolate'
+                      }`}>
+                        {option.label}
+                      </span>
+                    </button>
                   ))}
-                </motion.div>
-              )}
-            </motion.div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <p className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-chocolate mb-1">
+                  Она протянула руку,
+                </p>
+                <p className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-chocolate mb-6">
+                  а он — хлопнул
+                </p>
+                <motion.img
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  src="/images/highfive.png"
+                  alt="Highfive"
+                  className="w-full max-w-[400px] rounded-xl mb-6"
+                />
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="font-hand text-[clamp(1.5rem,5vw,2.5rem)] text-olive"
+                >
+                  Вышло идеально
+                </motion.p>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ========== ЭКРАН 5: LAUGHTER ========== */}
+        {currentScreen === 4 && (
+          <motion.div
+            key="laughter"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+          >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mt-8 text-center max-w-lg"
+              transition={{ delay: 0.2 }}
             >
-              {!highFiveTriggered ? (
-                <>
-                  <p className="text-xl md:text-2xl lg:text-3xl text-chocolate font-serif">
-                    Пятюня встретила ладонь
-                  </p>
-                  <p className="mt-3 text-olive text-base md:text-lg font-sans">
-                    Нажмите на картинку ✋
-                  </p>
-                </>
-              ) : (
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-xl md:text-2xl lg:text-3xl text-chocolate font-serif"
-                >
-                  С тех пор — <span className="text-marsala">ни дня без общения</span>
-                </motion.p>
-              )}
+              <p className="font-serif text-[clamp(2rem,7vw,4.5rem)] font-medium text-chocolate mb-1">
+                В этот момент
+              </p>
+              <p className="font-serif text-[clamp(2rem,7vw,4.5rem)] font-medium text-chocolate">
+                они засмеялись
+              </p>
+              <div className="w-16 h-0.5 bg-gold my-8 md:my-12" />
+              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-marsala italic">
+                и с этого всё началось
+              </p>
             </motion.div>
           </motion.div>
         )}
 
-        {/* Экран 4: Приглашение */}
-        {currentScreen === 3 && (
+        {/* ========== ЭКРАН 6: TOGETHER ========== */}
+        {currentScreen === 5 && (
+          <motion.div
+            key="together"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+          >
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="font-serif text-[clamp(5rem,18vw,12rem)] font-semibold text-chocolate leading-none tracking-tight"
+            >
+              {displayDays}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="font-hand text-olive text-[clamp(1.25rem,4vw,2rem)] mt-2 mb-10 md:mb-16"
+            >
+              дней
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-chocolate mb-1">
+                С того дня прошло 2 года
+              </p>
+              <p className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-chocolate/80 mb-8 md:mb-12">
+                Ни одного дня друг без друга
+              </p>
+              <p className="font-hand text-[clamp(1.75rem,6vw,3rem)] text-marsala italic">
+                И что дальше?
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* ========== ЭКРАН 7: PROPOSAL (КУЛЬМИНАЦИЯ) ========== */}
+        {currentScreen === 6 && (
+          <motion.div
+            key="proposal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full relative flex flex-col justify-center px-6 md:px-16"
+          >
+            {/* Background image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center z-0"
+              style={{ backgroundImage: 'url(/images/proposal.png)' }}
+            />
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50 z-0" />
+            
+            <Snowfall />
+
+            <div className="relative z-20">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="font-hand text-gold text-[clamp(1.25rem,4vw,1.75rem)] mb-10 md:mb-16"
+              >
+                декабрь 2025
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-white/85 mb-8 md:mb-12"
+              >
+                Загородный дом. Гирлянды. Танец.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <p className="font-serif text-[clamp(2.5rem,9vw,6rem)] font-semibold text-white leading-tight drop-shadow-lg">
+                  Она сказала
+                </p>
+                <p className="font-serif text-[clamp(4rem,14vw,10rem)] font-bold text-gold leading-none italic drop-shadow-xl">
+                  «да»
+                </p>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ========== ЭКРАН 8: INVITATION ========== */}
+        {currentScreen === 7 && (
           <motion.div
             key="invitation"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex items-center justify-center p-6 md:p-12"
-            style={{ backgroundImage: 'url(/images/background.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
           >
-            <div className="bg-cream/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 lg:p-16 max-w-md md:max-w-lg text-center shadow-2xl">
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                className="text-olive font-sans text-sm md:text-base tracking-[0.3em] mb-4">ПРИГЛАШЕНИЕ</motion.p>
-              <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                className="font-serif text-3xl md:text-4xl lg:text-5xl text-chocolate mb-6 md:mb-8">{guestName}!</motion.h2>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
-                className="text-chocolate/80 font-serif text-lg md:text-xl lg:text-2xl leading-relaxed">
-                Мы хотим разделить с тобой<br/>один из самых важных дней<br/>в нашей жизни.
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="font-serif text-[clamp(3rem,10vw,7rem)] font-semibold text-chocolate leading-none tracking-tight mb-6 md:mb-10"
+            >
+              30.08.2026
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mb-12 md:mb-16"
+            >
+              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-chocolate mb-1">
+                Для нас наступает новый этап
+              </p>
+              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-marsala">
+                Хотим вступить в него с вами
+              </p>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="font-hand text-[clamp(2rem,7vw,4rem)] text-olive italic"
+            >
+              Софья и Сергей
+            </motion.p>
+          </motion.div>
+        )}
+
+        {/* ========== ЭКРАН 9: VENUE ========== */}
+        {currentScreen === 8 && (
+          <motion.div
+            key="venue"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full relative"
+          >
+            {/* Background */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: 'url(/images/location.png)' }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-chocolate/85 via-chocolate/40 to-transparent" />
+
+            {/* Content */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-16 pb-12 md:pb-20 z-10">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="font-hand text-gold text-[clamp(1.25rem,4vw,1.75rem)] mb-4"
+              >
+                И мы уже знаем, где это случится
               </motion.p>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
-                className="text-marsala font-serif text-lg md:text-xl mt-6 italic">
-                «Мы затеяли хорошую авантюру —<br/>спасибо, что вписались!»
+
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="font-serif text-[clamp(3rem,12vw,8rem)] font-semibold text-white leading-none mb-6 md:mb-10 drop-shadow-lg"
+              >
+                Due To Love
+              </motion.h2>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-white/90 max-w-lg mb-6 leading-relaxed"
+              >
+                Место, где природа встречается с уютом.<br/>
+                Где можно выдохнуть и просто быть рядом.
               </motion.p>
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}
-                className="mt-8 pt-8 border-t border-olive/20">
-                <p className="text-chocolate font-serif text-2xl md:text-3xl">30 августа 2026</p>
-                <p className="text-olive font-sans text-base md:text-lg mt-2">Сбор гостей в 14:30</p>
-              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="font-serif text-[clamp(0.9rem,3vw,1.1rem)] text-white/70"
+              >
+                18+ · можно с парой
+              </motion.p>
             </div>
           </motion.div>
         )}
 
-        {/* Экран 5: Детали */}
-        {currentScreen === 4 && (
-          <motion.div key="details" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col items-center justify-center p-6 md:p-12 overflow-y-auto">
-            <h2 className="font-serif text-3xl md:text-4xl text-chocolate mb-8">Детали</h2>
-            <div className="grid grid-cols-2 gap-4 md:gap-6 w-full max-w-lg md:max-w-2xl">
-              {/* Тайминг */}
-              <motion.div className={`bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer ${expandedCard === 'timing' ? 'col-span-2' : ''}`}
-                onClick={() => setExpandedCard(expandedCard === 'timing' ? null : 'timing')} layout>
-                <img src="/images/timing.png" alt="Тайминг" className="w-full h-36 md:h-44 object-cover" />
-                <div className="p-4 md:p-5">
-                  <h3 className="font-serif text-xl md:text-2xl text-chocolate">Тайминг</h3>
-                  <AnimatePresence>
-                    {expandedCard === 'timing' && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                        className="text-base md:text-lg text-chocolate/70 mt-3 space-y-2">
-                        <p><span className="font-medium">14:30</span> — Сбор гостей</p>
-                        <p><span className="font-medium">15:15</span> — Церемония</p>
-                        <p><span className="font-medium">16:00</span> — Фуршет</p>
-                        <p><span className="font-medium">18:00</span> — Банкет</p>
-                        <p><span className="font-medium">22:30</span> — Окончание</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-              {/* Дресс-код */}
-              <motion.div className={`bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer ${expandedCard === 'dresscode' ? 'col-span-2' : ''}`}
-                onClick={() => setExpandedCard(expandedCard === 'dresscode' ? null : 'dresscode')} layout>
-                <img src="/images/dresscode.png" alt="Дресс-код" className="w-full h-36 md:h-44 object-cover" />
-                <div className="p-4 md:p-5">
-                  <h3 className="font-serif text-xl md:text-2xl text-chocolate">Дресс-код</h3>
-                  <AnimatePresence>
-                    {expandedCard === 'dresscode' && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                        className="text-base md:text-lg text-chocolate/70 mt-3">
-                        <p className="font-medium">Коктейльный / Нарядный casual</p>
-                        <p className="mt-2">Палитра: марсала, оливковый, крем, пыльный голубой, шоколадный</p>
-                        <div className="flex gap-2 mt-3">
-                          <span className="w-6 h-6 rounded-full bg-marsala"></span>
-                          <span className="w-6 h-6 rounded-full bg-olive"></span>
-                          <span className="w-6 h-6 rounded-full bg-cream border border-chocolate/20"></span>
-                          <span className="w-6 h-6 rounded-full bg-sky-200"></span>
-                          <span className="w-6 h-6 rounded-full bg-chocolate"></span>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-              {/* Локация */}
-              <motion.div className={`bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer ${expandedCard === 'location' ? 'col-span-2' : ''}`}
-                onClick={() => setExpandedCard(expandedCard === 'location' ? null : 'location')} layout>
-                <img src="/images/location.png" alt="Локация" className="w-full h-36 md:h-44 object-cover object-top" />
-                <div className="p-4 md:p-5">
-                  <h3 className="font-serif text-xl md:text-2xl text-chocolate">Локация</h3>
-                  <AnimatePresence>
-                    {expandedCard === 'location' && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                        className="text-base md:text-lg text-chocolate/70 mt-3">
-                        <p className="font-medium text-chocolate">Лесная Роса</p>
-                        <p className="mt-1">Московская область, ~15 км от МКАД</p>
-                        <a href="https://yandex.ru/maps/-/CLhbvDMr" target="_blank" rel="noopener noreferrer"
-                          className="inline-block mt-4 px-5 py-2 bg-olive text-white rounded-lg text-base font-medium hover:bg-olive/90"
-                          onClick={(e) => e.stopPropagation()}>Открыть карту →</a>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-              {/* Погода */}
-              <motion.div className={`bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer ${expandedCard === 'weather' ? 'col-span-2' : ''}`}
-                onClick={() => setExpandedCard(expandedCard === 'weather' ? null : 'weather')} layout>
-                <img src="/images/weather.png" alt="Погода" className="w-full h-36 md:h-44 object-cover" />
-                <div className="p-4 md:p-5">
-                  <h3 className="font-serif text-xl md:text-2xl text-chocolate">Погода</h3>
-                  <AnimatePresence>
-                    {expandedCard === 'weather' && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                        className="text-base md:text-lg text-chocolate/70 mt-3">
-                        <p>Конец августа под Москвой</p>
-                        <p className="mt-1 font-medium">Обычно +18...+24°C</p>
-                        <p className="mt-2 text-olive italic">Возьмите что-то тёплое на вечер</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
+        {/* ========== ЭКРАН 10: PREPARATION ========== */}
+        {currentScreen === 9 && (
+          <motion.div
+            key="preparation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full overflow-y-auto py-12 md:py-20 px-6 md:px-16"
+          >
+            {/* Countdown */}
+            <div className="mb-12 md:mb-16">
+              <p className="font-serif text-olive text-sm md:text-base uppercase tracking-widest mb-2">
+                До встречи осталось
+              </p>
+              <p className="font-serif text-[clamp(4rem,14vw,9rem)] font-semibold text-chocolate leading-none">
+                {getDaysUntilWedding()}
+              </p>
+              <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.75rem)] mt-1">дней</p>
             </div>
+
+            {/* What to wear */}
+            <section className="mb-10 md:mb-14">
+              <h3 className="font-serif text-[clamp(1.75rem,6vw,2.5rem)] font-semibold text-chocolate mb-4 md:mb-6">
+                Что надеть
+              </h3>
+              <p className="font-serif text-[clamp(1.1rem,3.5vw,1.4rem)] text-chocolate mb-4">
+                Приходите в этих оттенках:
+              </p>
+              <img src="/images/dresscode.png" alt="Палитра" className="max-w-[350px] w-full rounded-lg mb-4" />
+              <p className="font-hand text-olive text-[clamp(1.1rem,3.5vw,1.4rem)] italic">
+                Строгой проверки не будет, честно 😉
+              </p>
+            </section>
+
+            {/* Gifts */}
+            <section className="mb-10 md:mb-14">
+              <h3 className="font-serif text-[clamp(1.75rem,6vw,2.5rem)] font-semibold text-chocolate mb-4 md:mb-6">
+                Подарки
+              </h3>
+              <p className="font-serif text-[clamp(1.1rem,3.5vw,1.4rem)] text-chocolate leading-relaxed">
+                Мы мечтаем о своём жилье.<br/>
+                Благодарны любому вкладу, который приблизит нас к этому.
+              </p>
+            </section>
+
+            {/* What to bring */}
+            <section>
+              <h3 className="font-serif text-[clamp(1.75rem,6vw,2.5rem)] font-semibold text-chocolate mb-4 md:mb-6">
+                Что взять с собой
+              </h3>
+              <div className="font-serif text-[clamp(1.1rem,3.5vw,1.4rem)] text-chocolate space-y-2">
+                <p>✓ Хорошее настроение</p>
+                <p>✓ Сменную удобную обувь (танцы будут!)</p>
+                <p>✓ Что-то тёплое на вечер</p>
+              </div>
+              <p className="font-hand text-olive text-[clamp(1.1rem,3.5vw,1.4rem)] italic mt-4">
+                Зонты, аптечки и всё на случай «а вдруг» — у нас есть
+              </p>
+            </section>
           </motion.div>
         )}
 
-        {/* Экран 6: RSVP */}
-        {currentScreen === 5 && (
-          <motion.div key="rsvp" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="h-full w-full flex items-center justify-center p-6 md:p-12 overflow-y-auto">
-            <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 w-full max-w-md md:max-w-lg my-8">
-              {!formSubmitted ? (
-                <>
-                  <div className="text-center mb-8">
-                    <img src="/images/rsvp.png" alt="" className="w-36 md:w-44 mx-auto mb-6" />
-                    <h2 className="font-serif text-3xl md:text-4xl text-chocolate">Ждём ответ</h2>
-                    <p className="text-olive text-base md:text-lg mt-2">до 1 мая 2026</p>
+        {/* ========== ЭКРАН 11: CHEATSHEET ========== */}
+        {currentScreen === 10 && (
+          <motion.div
+            key="cheatsheet"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full flex flex-col"
+          >
+            <div className="pt-8 md:pt-12 px-6 md:px-16">
+              <h2 className="font-hand text-marsala text-[clamp(2rem,7vw,3.5rem)]">Шпаргалка</h2>
+            </div>
+
+            {/* Cards */}
+            <div className="flex-1 flex items-center px-6 md:px-16 overflow-x-auto snap-x snap-mandatory gap-5 pb-4"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              
+              {/* Card 1: When */}
+              <div className="flex-shrink-0 w-[calc(100vw-80px)] max-w-[400px] min-h-[350px] bg-white rounded-2xl p-8 shadow-lg snap-center flex flex-col justify-center text-center">
+                <p className="font-serif text-olive text-[clamp(1.1rem,3.5vw,1.4rem)] uppercase tracking-wide mb-4">Суббота</p>
+                <p className="font-serif text-chocolate text-[clamp(2.5rem,10vw,5rem)] font-semibold leading-tight mb-6">
+                  30 августа 2026
+                </p>
+                <p className="font-serif text-chocolate text-[clamp(1.5rem,5vw,2rem)]">14:30 — 22:30</p>
+              </div>
+
+              {/* Card 2: Where */}
+              <div className="flex-shrink-0 w-[calc(100vw-80px)] max-w-[400px] min-h-[350px] bg-white rounded-2xl p-8 shadow-lg snap-center flex flex-col justify-center text-center">
+                <p className="font-serif text-chocolate text-[clamp(2rem,8vw,4rem)] font-semibold mb-4">Due To Love</p>
+                <p className="font-serif text-chocolate/70 text-[clamp(1rem,3.5vw,1.25rem)] mb-6">
+                  [Адрес уточняется]
+                </p>
+                <a 
+                  href="https://yandex.ru/maps/-/CLhzMN9F" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block font-serif text-cream bg-marsala py-4 px-8 rounded-lg text-[clamp(1rem,3.5vw,1.25rem)]"
+                >
+                  🗺️ Построить маршрут
+                </a>
+              </div>
+
+              {/* Card 3: What */}
+              <div className="flex-shrink-0 w-[calc(100vw-80px)] max-w-[400px] min-h-[350px] bg-white rounded-2xl p-8 shadow-lg snap-center flex flex-col justify-center">
+                <div className="font-serif text-chocolate text-[clamp(1.1rem,3.5vw,1.4rem)] space-y-4">
+                  <p>👔 Оттенки из палитры</p>
+                  <p>👟 Сменка для танцев</p>
+                  <p>🧥 Тёплое на вечер</p>
+                </div>
+              </div>
+
+              {/* Card 4: Questions */}
+              <div className="flex-shrink-0 w-[calc(100vw-80px)] max-w-[400px] min-h-[350px] bg-white rounded-2xl p-8 shadow-lg snap-center flex flex-col justify-center text-center">
+                <p className="font-serif text-chocolate text-[clamp(1.25rem,4vw,1.75rem)] mb-6">
+                  Что-то непонятно?<br/>Бот ответит на всё
+                </p>
+                <a 
+                  href="https://t.me/wedding_bot" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block font-serif text-cream bg-olive py-4 px-8 rounded-lg text-[clamp(1rem,3.5vw,1.25rem)]"
+                >
+                  💬 Открыть бота
+                </a>
+              </div>
+            </div>
+
+            <p className="text-center font-hand text-olive/60 text-sm pb-6">← свайп →</p>
+          </motion.div>
+        )}
+
+        {/* ========== ЭКРАН 12: RSVP ========== */}
+        {currentScreen === 11 && (
+          <motion.div
+            key="rsvp"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="h-full w-full overflow-y-auto py-12 md:py-20 px-6 md:px-16"
+          >
+            {!formSubmitted ? (
+              <>
+                <h2 className="font-serif text-[clamp(2.5rem,9vw,5rem)] font-semibold text-chocolate mb-8">
+                  Придёте?
+                </h2>
+
+                {/* Scale 1-10 */}
+                <div className="mb-8">
+                  <div className="flex gap-2 flex-wrap mb-3">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                      <button
+                        key={num}
+                        onClick={() => setFormData({ ...formData, rating: num })}
+                        style={{
+                          backgroundColor: formData.rating === num ? getRatingColor(num) : 'transparent',
+                        }}
+                        className={`w-10 h-10 md:w-12 md:h-12 rounded-lg border-2 border-chocolate font-serif text-base md:text-lg font-semibold transition-all ${
+                          formData.rating === num ? 'text-cream' : 'text-chocolate'
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    ))}
                   </div>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                      <p className="text-chocolate font-serif text-lg md:text-xl mb-3">{guestName}, вы придёте?</p>
-                      <div className="flex gap-4">
-                        <button type="button" onClick={() => setFormData({...formData, attending: true})}
-                          className={`flex-1 py-4 rounded-xl border-2 text-lg font-medium transition-all ${
-                            formData.attending === true ? 'border-olive bg-olive/10 text-olive' : 'border-cream hover:border-olive/50'}`}>
-                          С радостью!
-                        </button>
-                        <button type="button" onClick={() => setFormData({...formData, attending: false})}
-                          className={`flex-1 py-4 rounded-xl border-2 text-lg font-medium transition-all ${
-                            formData.attending === false ? 'border-marsala bg-marsala/10 text-marsala' : 'border-cream hover:border-marsala/50'}`}>
-                          Не смогу
-                        </button>
-                      </div>
-                    </div>
-                    {formData.attending && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="space-y-5">
-                        <div>
-                          <label className="text-chocolate font-medium text-lg block mb-2">Предпочтения по еде</label>
-                          <select value={formData.meal} onChange={(e) => setFormData({...formData, meal: e.target.value})}
-                            className="w-full p-4 border-2 border-cream rounded-xl bg-white focus:border-olive outline-none text-lg">
-                            <option value="">Выберите...</option>
-                            <option value="meat">Мясо</option>
-                            <option value="fish">Рыба</option>
-                            <option value="veg">Вегетарианское</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-chocolate font-medium text-lg block mb-2">Что будете пить?</label>
-                          <div className="flex flex-wrap gap-3">
-                            {['Вино', 'Шампанское', 'Крепкое', 'Безалкогольное'].map(drink => (
-                              <button key={drink} type="button"
-                                onClick={() => {
-                                  const drinks = formData.drinks.includes(drink) ? formData.drinks.filter(d => d !== drink) : [...formData.drinks, drink]
-                                  setFormData({...formData, drinks})
-                                }}
-                                className={`px-4 py-2 rounded-full text-base border-2 transition-all ${
-                                  formData.drinks.includes(drink) ? 'bg-olive text-white border-olive' : 'border-cream hover:border-olive'}`}>
-                                {drink}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-chocolate font-medium text-lg block mb-2">Аллергии / ограничения</label>
-                          <input type="text" value={formData.dietary} onChange={(e) => setFormData({...formData, dietary: e.target.value})}
-                            placeholder="Если есть, напишите" className="w-full p-4 border-2 border-cream rounded-xl focus:border-olive outline-none text-lg" />
-                        </div>
-                        <div className="space-y-3">
-                          <label className="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" checked={formData.transfer} onChange={(e) => setFormData({...formData, transfer: e.target.checked})} className="w-5 h-5 text-olive rounded" />
-                            <span className="text-chocolate text-lg">Нужен трансфер</span>
-                          </label>
-                          <label className="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" checked={formData.accommodation} onChange={(e) => setFormData({...formData, accommodation: e.target.checked})} className="w-5 h-5 text-olive rounded" />
-                            <span className="text-chocolate text-lg">Нужно размещение</span>
-                          </label>
-                        </div>
-                        <div>
-                          <label className="text-chocolate font-medium text-lg block mb-2">Хотите что-то добавить?</label>
-                          <textarea value={formData.comment} onChange={(e) => setFormData({...formData, comment: e.target.value})}
-                            placeholder="Любые пожелания" rows={3} className="w-full p-4 border-2 border-cream rounded-xl focus:border-olive outline-none resize-none text-lg" />
-                        </div>
-                      </motion.div>
+                  {/* Scale labels */}
+                  <div className="flex justify-between text-xs md:text-sm text-chocolate/60 font-serif max-w-[420px]">
+                    <span>Скорее нет</span>
+                    <span>Надо подумать</span>
+                    <span>Точно буду!</span>
+                  </div>
+                  {formData.rating && (
+                    <p className="font-hand text-[clamp(1.1rem,3.5vw,1.4rem)] mt-3" style={{ color: getRatingColor(formData.rating) }}>
+                      {getRatingLabel(formData.rating)}
+                    </p>
+                  )}
+                </div>
+
+                {/* Form fields */}
+                <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
+                  {/* Name */}
+                  <div>
+                    <label className="block font-serif text-chocolate mb-2">Ваше имя</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Имя Фамилия"
+                      className="w-full p-4 border-2 border-chocolate rounded-lg font-serif bg-transparent"
+                    />
+                  </div>
+
+                  {/* With guest */}
+                  <div>
+                    <label className="flex items-center gap-3 cursor-pointer font-serif text-chocolate">
+                      <input
+                        type="checkbox"
+                        checked={formData.withGuest}
+                        onChange={(e) => setFormData({ ...formData, withGuest: e.target.checked })}
+                        className="w-5 h-5"
+                      />
+                      Приду с парой
+                    </label>
+                    {formData.withGuest && (
+                      <input
+                        type="text"
+                        value={formData.guestName}
+                        onChange={(e) => setFormData({ ...formData, guestName: e.target.value })}
+                        placeholder="Имя вашей пары"
+                        className="w-full p-4 border-2 border-chocolate rounded-lg font-serif bg-transparent mt-3"
+                      />
                     )}
-                    <button type="submit" disabled={formData.attending === null}
-                      className="w-full py-4 bg-marsala text-white rounded-xl text-xl font-medium hover:bg-marsala/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                      Отправить
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center py-12">
-                  <div className="text-6xl mb-6">{formData.attending ? '💚' : '💔'}</div>
-                  <h2 className="font-serif text-3xl md:text-4xl text-chocolate mb-4">{formData.attending ? 'Спасибо!' : 'Жаль...'}</h2>
-                  <p className="text-chocolate/70 text-lg md:text-xl">
-                    {formData.attending ? 'Мы очень рады, что вы будете с нами!' : 'Будем скучать. Может ещё передумаете?'}
+                  </div>
+
+                  {/* Food preferences */}
+                  <div>
+                    <label className="block font-serif text-chocolate mb-2">Предпочтения по еде</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['Мясо', 'Рыба', 'Вегетарианское', 'Без ограничений'].map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => {
+                            const food = formData.food.includes(option)
+                              ? formData.food.filter(f => f !== option)
+                              : [...formData.food, option]
+                            setFormData({ ...formData, food })
+                          }}
+                          className={`px-4 py-2 border-2 border-chocolate rounded-lg font-serif transition-all ${
+                            formData.food.includes(option) ? 'bg-marsala text-cream border-marsala' : ''
+                          }`}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Alcohol */}
+                  <div>
+                    <label className="block font-serif text-chocolate mb-2">Алкоголь</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['Вино', 'Шампанское', 'Крепкое', 'Коктейли', 'Не пью'].map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => {
+                            const alcohol = formData.alcohol.includes(option)
+                              ? formData.alcohol.filter(a => a !== option)
+                              : [...formData.alcohol, option]
+                            setFormData({ ...formData, alcohol })
+                          }}
+                          className={`px-4 py-2 border-2 border-chocolate rounded-lg font-serif transition-all ${
+                            formData.alcohol.includes(option) ? 'bg-marsala text-cream border-marsala' : ''
+                          }`}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Transport */}
+                  <div>
+                    <label className="block font-serif text-chocolate mb-2">Как планируете добираться?</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['На машине', 'Такси', 'Нужен трансфер'].map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, transport: option })}
+                          className={`px-4 py-2 border-2 border-chocolate rounded-lg font-serif transition-all ${
+                            formData.transport === option ? 'bg-marsala text-cream border-marsala' : ''
+                          }`}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Accommodation */}
+                  <div>
+                    <label className="flex items-center gap-3 cursor-pointer font-serif text-chocolate">
+                      <input
+                        type="checkbox"
+                        checked={formData.accommodation}
+                        onChange={(e) => setFormData({ ...formData, accommodation: e.target.checked })}
+                        className="w-5 h-5"
+                      />
+                      Нужно размещение на ночь
+                    </label>
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={!formData.rating || !formData.name}
+                    className="w-full py-4 bg-marsala text-cream font-serif text-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Отправить
+                  </button>
+
+                  <p className="font-hand text-olive text-center">
+                    Если планы изменятся — возвращайтесь и обновите
                   </p>
-                </motion.div>
-              )}
-            </div>
+                </form>
+              </>
+            ) : (
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="h-full flex flex-col justify-center"
+              >
+                <p className="font-serif text-[clamp(2.5rem,9vw,5rem)] font-semibold text-chocolate mb-6">
+                  {formData.rating >= 7 ? 'Ждём вас!' : 'Спасибо за ответ'}
+                </p>
+                <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.75rem)]">
+                  {formData.rating >= 7 
+                    ? 'Если планы изменятся — возвращайтесь и обновите' 
+                    : 'Если что-то изменится — мы всегда рады'
+                  }
+                </p>
+              </motion.div>
+            )}
           </motion.div>
         )}
+
       </AnimatePresence>
     </div>
   )
