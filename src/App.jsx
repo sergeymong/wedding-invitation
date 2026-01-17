@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Google Sheets API
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrJZh400sy4K-AoMhTzGgd_3TqE63YGv__NP30Cq5hrYm31csZw247FGnmC6HjoxlR/exec'
+
 // Получаем имя гостя из URL
 const getGuestFromURL = () => {
   const params = new URLSearchParams(window.location.search)
@@ -217,6 +220,7 @@ export default function App() {
     accommodation: false,
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   const [touchStart, setTouchStart] = useState(0)
 
@@ -296,9 +300,22 @@ export default function App() {
     setTimeout(() => setShowHighfiveResult(true), 500)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('RSVP:', formData)
+    setIsSubmitting(true)
+    
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+    } catch (error) {
+      console.error('Error submitting:', error)
+    }
+    
+    setIsSubmitting(false)
     setFormSubmitted(true)
   }
 
@@ -949,46 +966,46 @@ export default function App() {
           >
             {/* Countdown */}
             <div className="mb-8 md:mb-10">
-              <p className="font-serif text-olive text-sm uppercase tracking-widest mb-1">
+              <p className="font-serif text-olive text-base md:text-lg uppercase tracking-widest mb-1">
                 До встречи осталось
               </p>
               <p className="font-serif text-[clamp(4rem,14vw,8rem)] font-semibold text-chocolate leading-none">
                 {getDaysUntilWedding()}
               </p>
-              <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.5rem)]">дней</p>
+              <p className="font-hand text-olive text-[clamp(1.5rem,5vw,2rem)]">дней</p>
             </div>
 
-            {/* Контент без плиток */}
-            <div className="space-y-6 md:space-y-8">
+            {/* Контент без плиток — увеличенные шрифты */}
+            <div className="space-y-8 md:space-y-10">
               {/* Что надеть */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.25rem,4vw,1.5rem)] mb-2">Что надеть</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1rem,3.5vw,1.25rem)] mb-3">Приходите в этих оттенках:</p>
-                <div className="flex gap-3">
-                  <span className="w-8 h-8 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
-                  <span className="w-8 h-8 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
-                  <span className="w-8 h-8 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
-                  <span className="w-8 h-8 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
-                  <span className="w-8 h-8 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.5rem,5vw,2rem)] mb-3">Что надеть</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1.25rem,4vw,1.5rem)] mb-4">Приходите в этих оттенках:</p>
+                <div className="flex gap-4">
+                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
+                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
+                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
+                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
+                  <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
                 </div>
-                <p className="font-hand text-olive text-[clamp(0.9rem,3vw,1rem)] mt-2">Строгой проверки не будет</p>
+                <p className="font-hand text-olive text-[clamp(1.1rem,3.5vw,1.25rem)] mt-3">Строгой проверки не будет</p>
               </div>
               
               {/* Подарки */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.25rem,4vw,1.5rem)] mb-2">Подарки</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1rem,3.5vw,1.25rem)]">
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.5rem,5vw,2rem)] mb-3">Подарки</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1.25rem,4vw,1.5rem)]">
                   Мы мечтаем о своём жилье. Благодарны любому вкладу, который приблизит нас к этому.
                 </p>
               </div>
               
               {/* Что взять */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.25rem,4vw,1.5rem)] mb-2">Что взять с собой</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1rem,3.5vw,1.25rem)]">
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1.5rem,5vw,2rem)] mb-3">Что взять с собой</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(1.25rem,4vw,1.5rem)]">
                   Хорошее настроение, сменную обувь для танцев и что-то тёплое на вечер.
                 </p>
-                <p className="font-hand text-olive text-[clamp(0.9rem,3vw,1rem)] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
+                <p className="font-hand text-olive text-[clamp(1.1rem,3.5vw,1.25rem)] mt-3">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
               </div>
             </div>
           </motion.div>
@@ -1242,10 +1259,10 @@ export default function App() {
                   {/* Submit */}
                   <button
                     type="submit"
-                    disabled={!formData.rating || !formData.name}
+                    disabled={!formData.rating || !formData.name || isSubmitting}
                     className="w-full py-4 bg-marsala text-cream font-serif text-lg rounded-lg disabled:opacity-50"
                   >
-                    Отправить
+                    {isSubmitting ? 'Отправляем...' : 'Отправить'}
                   </button>
                 </form>
               </>
