@@ -363,75 +363,88 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full relative overflow-hidden"
           >
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-10 md:mb-16"
-            >
-              февраль 2023
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mb-8 md:mb-12"
-            >
-              <p className="font-serif text-[clamp(2rem,7vw,4rem)] font-medium text-chocolate leading-tight">
-                Это история любви
-              </p>
-              <p className="font-serif text-[clamp(2rem,7vw,4rem)] font-medium text-chocolate leading-tight">
-                с первого взгляда
-              </p>
-              <p className="font-hand text-[clamp(1.5rem,5vw,2.5rem)] text-olive mt-2 italic">
-                Почти.
-              </p>
-            </motion.div>
-
-            {!showStoryResult ? (
-              <motion.div
+            {/* Картинка справа */}
+            <motion.img
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              src="/images/his-photo.png"
+              alt=""
+              className="absolute right-0 bottom-0 h-full w-auto max-w-[70%] object-contain object-right-bottom pointer-events-none md:max-w-[60%]"
+            />
+            
+            {/* Контент слева */}
+            <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 max-w-[65%] md:max-w-[50%]">
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-10 md:mb-16"
               >
-                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-6">
-                  Она впервые увидела его фото и подумала:
-                </p>
-                <div className="flex flex-col gap-3 max-w-md">
-                  {['Интересно...', 'Может быть', 'Точно нет'].map((answer, i) => (
-                    <motion.button
-                      key={answer}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.6 + i * 0.1 }}
-                      onClick={() => handleStoryAnswer(answer)}
-                      disabled={storyAnswer !== null}
-                      className={`text-left font-serif text-[clamp(1.1rem,3.5vw,1.4rem)] py-4 px-6 border-2 rounded-lg transition-all ${
-                        storyAnswer === answer 
-                          ? 'bg-marsala text-cream border-marsala' 
-                          : 'border-chocolate text-chocolate hover:border-marsala'
-                      } ${storyAnswer && storyAnswer !== answer ? 'opacity-40' : ''}`}
-                    >
-                      {answer}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            ) : (
+                февраль 2023
+              </motion.p>
+
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-8 md:mb-12"
               >
-                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-4">
-                  Она впервые увидела его фото и подумала:
+                <p className="font-serif text-[clamp(1.5rem,5vw,3rem)] font-medium text-chocolate leading-tight">
+                  Это история любви
                 </p>
-                <p className="font-serif text-[clamp(3rem,10vw,6rem)] font-semibold text-marsala italic">
-                  «Точно нет»
+                <p className="font-serif text-[clamp(1.5rem,5vw,3rem)] font-medium text-chocolate leading-tight">
+                  с первого взгляда
+                </p>
+                <p className="font-hand text-[clamp(1.25rem,4vw,2rem)] text-olive mt-2 italic">
+                  Почти.
                 </p>
               </motion.div>
-            )}
+
+              {!showStoryResult ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <p className="font-serif text-[clamp(0.9rem,3vw,1.25rem)] text-chocolate/80 mb-4">
+                    Она впервые увидела его фото и подумала:
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {['Интересно...', 'Может быть', 'Точно нет'].map((answer, i) => (
+                      <motion.button
+                        key={answer}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.6 + i * 0.1 }}
+                        onClick={() => handleStoryAnswer(answer)}
+                        disabled={storyAnswer !== null}
+                        className={`text-left font-serif text-[clamp(0.95rem,3vw,1.2rem)] py-3 px-4 border-2 rounded-lg transition-all ${
+                          storyAnswer === answer 
+                            ? 'bg-marsala text-cream border-marsala' 
+                            : 'border-chocolate text-chocolate hover:border-marsala'
+                        } ${storyAnswer && storyAnswer !== answer ? 'opacity-40' : ''}`}
+                      >
+                        {answer}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <p className="font-serif text-[clamp(0.9rem,3vw,1.25rem)] text-chocolate/80 mb-4">
+                    Она впервые увидела его фото и подумала:
+                  </p>
+                  <p className="font-serif text-[clamp(2rem,7vw,4.5rem)] font-semibold text-marsala italic">
+                    «Точно нет»
+                  </p>
+                </motion.div>
+              )}
+            </div>
           </motion.div>
         )}
 
@@ -442,31 +455,44 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full relative overflow-hidden"
           >
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-16 md:mb-24"
-            >
-              9 декабря 2023
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+            {/* Картинка справа */}
+            <motion.img
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-            >
-              <p className="font-serif text-[clamp(1.75rem,6vw,3.5rem)] font-medium text-chocolate mb-2">
-                Он зашёл в квартиру
-              </p>
-              <p className="font-serif text-[clamp(2.5rem,9vw,5.5rem)] font-semibold text-chocolate leading-tight">
-                Ещё до приветствия
-              </p>
-              <p className="font-serif text-[clamp(2.5rem,9vw,5.5rem)] font-semibold text-marsala leading-tight">
-                она всё поняла
-              </p>
-            </motion.div>
+              src="/images/first-meeting.png"
+              alt=""
+              className="absolute right-0 bottom-0 h-full w-auto max-w-[75%] object-contain object-right-bottom pointer-events-none md:max-w-[65%]"
+            />
+            
+            {/* Контент слева */}
+            <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 max-w-[60%] md:max-w-[50%]">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-12 md:mb-20"
+              >
+                9 декабря 2023
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <p className="font-serif text-[clamp(1.25rem,4vw,2.5rem)] font-medium text-chocolate mb-2">
+                  Он зашёл в квартиру
+                </p>
+                <p className="font-serif text-[clamp(1.5rem,5vw,3.5rem)] font-semibold text-chocolate leading-tight">
+                  Ещё до приветствия
+                </p>
+                <p className="font-serif text-[clamp(1.5rem,5vw,3.5rem)] font-semibold text-marsala leading-tight">
+                  она всё поняла
+                </p>
+              </motion.div>
+            </div>
           </motion.div>
         )}
 
@@ -563,23 +589,40 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full flex flex-col"
           >
+            {/* Текст сверху */}
+            <div className="flex-shrink-0 pt-12 md:pt-20 px-6 md:px-16">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <p className="font-serif text-[clamp(1.75rem,6vw,3.5rem)] font-medium text-chocolate mb-1">
+                  В этот момент
+                </p>
+                <p className="font-serif text-[clamp(1.75rem,6vw,3.5rem)] font-medium text-chocolate">
+                  они засмеялись
+                </p>
+                <div className="w-16 h-0.5 bg-gold my-6 md:my-8" />
+                <p className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-marsala italic">
+                  и с этого всё началось
+                </p>
+              </motion.div>
+            </div>
+            
+            {/* Картинка снизу */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.4 }}
+              className="flex-1 flex items-end justify-center overflow-hidden"
             >
-              <p className="font-serif text-[clamp(2rem,7vw,4.5rem)] font-medium text-chocolate mb-1">
-                В этот момент
-              </p>
-              <p className="font-serif text-[clamp(2rem,7vw,4.5rem)] font-medium text-chocolate">
-                они засмеялись
-              </p>
-              <div className="w-16 h-0.5 bg-gold my-8 md:my-12" />
-              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-marsala italic">
-                и с этого всё началось
-              </p>
+              <img
+                src="/images/laughter.png"
+                alt=""
+                className="max-h-[55vh] w-auto object-contain"
+              />
             </motion.div>
           </motion.div>
         )}
@@ -591,38 +634,55 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full flex flex-col"
           >
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="font-serif text-[clamp(5rem,18vw,12rem)] font-semibold text-chocolate leading-none tracking-tight"
-            >
-              {displayDays}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="font-hand text-olive text-[clamp(1.25rem,4vw,2rem)] mt-2 mb-10 md:mb-16"
-            >
-              дней
-            </motion.p>
+            {/* Контент сверху */}
+            <div className="flex-shrink-0 pt-12 md:pt-16 px-6 md:px-16">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="font-serif text-[clamp(4rem,14vw,9rem)] font-semibold text-chocolate leading-none tracking-tight"
+              >
+                {displayDays}
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="font-hand text-olive text-[clamp(1.25rem,4vw,2rem)] mt-1 mb-6"
+              >
+                дней
+              </motion.p>
 
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <p className="font-serif text-[clamp(1.25rem,4vw,2rem)] font-medium text-chocolate mb-1">
+                  С того дня прошло 2 года
+                </p>
+                <p className="font-serif text-[clamp(1rem,3.5vw,1.5rem)] text-chocolate/80 mb-4">
+                  Ни одного дня друг без друга
+                </p>
+                <p className="font-hand text-[clamp(1.5rem,5vw,2.5rem)] text-marsala italic">
+                  И что дальше?
+                </p>
+              </motion.div>
+            </div>
+            
+            {/* Картинка снизу */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.6 }}
+              className="flex-1 flex items-end justify-center overflow-hidden"
             >
-              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-chocolate mb-1">
-                С того дня прошло 2 года
-              </p>
-              <p className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-chocolate/80 mb-8 md:mb-12">
-                Ни одного дня друг без друга
-              </p>
-              <p className="font-hand text-[clamp(1.75rem,6vw,3rem)] text-marsala italic">
-                И что дальше?
-              </p>
+              <img
+                src="/images/together.png"
+                alt=""
+                className="max-h-[50vh] w-auto object-contain"
+              />
             </motion.div>
           </motion.div>
         )}
@@ -634,24 +694,28 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full relative flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full relative flex flex-col justify-end"
           >
             {/* Background image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center z-0"
-              style={{ backgroundImage: 'url(/images/proposal.png)' }}
+            <motion.img
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.5 }}
+              src="/images/proposal.png"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover object-center z-0"
             />
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50 z-0" />
+            {/* Dark overlay - градиент снизу */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-0" />
             
             <Snowfall />
 
-            <div className="relative z-20">
+            <div className="relative z-20 p-6 md:p-16 pb-12 md:pb-20">
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="font-hand text-gold text-[clamp(1.25rem,4vw,1.75rem)] mb-10 md:mb-16"
+                className="font-hand text-gold text-[clamp(1.25rem,4vw,1.75rem)] mb-6 md:mb-10"
               >
                 декабрь 2025
               </motion.p>
@@ -660,7 +724,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-white/85 mb-8 md:mb-12"
+                className="font-serif text-[clamp(1.1rem,3.5vw,1.75rem)] text-white/85 mb-6 md:mb-8"
               >
                 Загородный дом. Гирлянды. Танец.
               </motion.p>
@@ -670,10 +734,10 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
-                <p className="font-serif text-[clamp(2.5rem,9vw,6rem)] font-semibold text-white leading-tight drop-shadow-lg">
+                <p className="font-serif text-[clamp(2rem,7vw,5rem)] font-semibold text-white leading-tight drop-shadow-lg">
                   Она сказала
                 </p>
-                <p className="font-serif text-[clamp(4rem,14vw,10rem)] font-bold text-gold leading-none italic drop-shadow-xl">
+                <p className="font-serif text-[clamp(3.5rem,12vw,9rem)] font-bold text-gold leading-none italic drop-shadow-xl">
                   «да»
                 </p>
               </motion.div>
@@ -688,38 +752,48 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full relative flex items-center justify-center"
           >
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="font-serif text-[clamp(3rem,10vw,7rem)] font-semibold text-chocolate leading-none tracking-tight mb-6 md:mb-10"
-            >
-              30.08.2026
-            </motion.p>
+            {/* Рамка по центру */}
+            <img 
+              src="/images/background.png" 
+              alt="" 
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none z-0 p-4 md:p-8" 
+            />
+            
+            {/* Контент внутри рамки */}
+            <div className="relative z-10 text-center px-12 md:px-24">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="font-serif text-[clamp(2.5rem,9vw,6rem)] font-semibold text-chocolate leading-none tracking-tight mb-6 md:mb-10"
+              >
+                30.08.2026
+              </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mb-12 md:mb-16"
-            >
-              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-chocolate mb-1">
-                Для нас наступает новый этап
-              </p>
-              <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-marsala">
-                Хотим вступить в него с вами
-              </p>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mb-10 md:mb-14"
+              >
+                <p className="font-serif text-[clamp(1.1rem,4vw,2rem)] font-medium text-chocolate mb-1">
+                  Для нас наступает новый этап
+                </p>
+                <p className="font-serif text-[clamp(1.1rem,4vw,2rem)] font-medium text-marsala">
+                  Хотим вступить в него с вами
+                </p>
+              </motion.div>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="font-hand text-[clamp(2rem,7vw,4rem)] text-olive italic"
-            >
-              Софья и Сергей
-            </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="font-hand text-[clamp(1.75rem,6vw,3.5rem)] text-olive italic"
+              >
+                Софья и Сергей
+              </motion.p>
+            </div>
           </motion.div>
         )}
 
@@ -732,12 +806,16 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="h-full w-full relative"
           >
-            {/* Background */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: 'url(/images/location.png)' }}
+            {/* Background - новое красивое фото площадки */}
+            <motion.img
+              initial={{ scale: 1.05 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.2 }}
+              src="/images/location.png"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-chocolate/85 via-chocolate/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-chocolate/90 via-chocolate/30 to-transparent" />
 
             {/* Content */}
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-16 pb-12 md:pb-20 z-10">
@@ -753,7 +831,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-serif text-[clamp(3rem,12vw,8rem)] font-semibold text-white leading-none mb-6 md:mb-10 drop-shadow-lg"
+                className="font-serif text-[clamp(2.5rem,10vw,7rem)] font-semibold text-white leading-none mb-6 md:mb-10 drop-shadow-lg"
               >
                 Due To Love
               </motion.h2>
@@ -762,7 +840,7 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-white/90 max-w-lg mb-6 leading-relaxed"
+                className="font-serif text-[clamp(1rem,3vw,1.4rem)] text-white/90 max-w-lg mb-6 leading-relaxed"
               >
                 Место, где природа встречается с уютом.<br/>
                 Где можно выдохнуть и просто быть рядом.
