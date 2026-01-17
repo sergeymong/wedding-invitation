@@ -29,7 +29,7 @@ const screens = [
   'rsvp'             // 12
 ]
 
-// Компонент Fireflies для экрана 1
+// Компонент Fireflies для экрана 1 — спокойные светлячки
 function Fireflies() {
   const canvasRef = useRef(null)
 
@@ -48,16 +48,16 @@ function Fireflies() {
     const createFirefly = () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      size: Math.random() * 3 + 2,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
-      opacity: Math.random() * 0.5 + 0.3,
-      pulseSpeed: Math.random() * 0.02 + 0.01,
+      size: Math.random() * 2 + 1.5,
+      speedX: (Math.random() - 0.5) * 0.2,
+      speedY: (Math.random() - 0.5) * 0.2,
+      opacity: Math.random() * 0.4 + 0.2,
+      pulseSpeed: Math.random() * 0.008 + 0.004,
       pulseOffset: Math.random() * Math.PI * 2,
     })
 
     const initFireflies = () => {
-      fireflies = Array.from({ length: 25 }, createFirefly)
+      fireflies = Array.from({ length: 15 }, createFirefly)
     }
 
     const animate = (time) => {
@@ -71,13 +71,13 @@ function Fireflies() {
         const pulse = Math.sin(time * f.pulseSpeed + f.pulseOffset) * 0.3 + 0.7
         const currentOpacity = f.opacity * pulse
 
-        const gradient = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.size * 5)
+        const gradient = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.size * 4)
         gradient.addColorStop(0, `rgba(201, 162, 39, ${currentOpacity})`)
-        gradient.addColorStop(0.3, `rgba(201, 162, 39, ${currentOpacity * 0.6})`)
+        gradient.addColorStop(0.4, `rgba(201, 162, 39, ${currentOpacity * 0.5})`)
         gradient.addColorStop(1, 'rgba(201, 162, 39, 0)')
 
         ctx.beginPath()
-        ctx.arc(f.x, f.y, f.size * 5, 0, Math.PI * 2)
+        ctx.arc(f.x, f.y, f.size * 4, 0, Math.PI * 2)
         ctx.fillStyle = gradient
         ctx.fill()
       })
@@ -154,6 +154,40 @@ function Snowfall() {
   }, [])
 
   return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
+}
+
+// Компонент Hearts для финального экрана
+function FloatingHearts() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ 
+            y: '100vh', 
+            x: `${15 + i * 15}vw`,
+            opacity: 0,
+            scale: 0.5
+          }}
+          animate={{ 
+            y: '-20vh',
+            opacity: [0, 1, 1, 0],
+            scale: [0.5, 1, 1, 0.8]
+          }}
+          transition={{ 
+            duration: 4 + i * 0.5,
+            repeat: Infinity,
+            delay: i * 0.8,
+            ease: "easeOut"
+          }}
+          className="absolute text-marsala/40"
+          style={{ fontSize: `${20 + i * 5}px` }}
+        >
+          ♥
+        </motion.div>
+      ))}
+    </div>
+  )
 }
 
 export default function App() {
@@ -270,14 +304,14 @@ export default function App() {
 
   const getRatingColor = (value) => {
     if (value >= 6) return '#5C6B4A'
-    if (value >= 4) return '#C9A227'
+    if (value >= 3) return '#C9A227'
     return '#722F37'
   }
 
   const getRatingLabel = (value) => {
-    if (value >= 6) return 'Ура, ждём!'
-    if (value >= 4) return 'Надо подумать'
-    if (value >= 1) return 'Скорее нет'
+    if (value >= 6) return '🎉 Ура, ждём!'
+    if (value >= 3) return '🤔 Понимаем, подумайте! Будем рады, если получится'
+    if (value >= 1) return '😢 Эх, будем скучать... Но всё равно ждём, вдруг передумаете!'
     return ''
   }
 
@@ -478,21 +512,21 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="h-full w-full relative"
           >
-            {/* Фоновая картинка на весь экран */}
+            {/* Фоновая картинка на весь экран — смещена вниз */}
             <img
               src="/images/first-meeting.png"
               alt=""
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+              className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0"
             />
-            {/* Градиент слева */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cream/95 via-cream/70 to-transparent z-0" />
+            {/* Градиент сверху для текста */}
+            <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/70 to-transparent z-0" />
             
-            {/* Контент слева */}
-            <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 max-w-[65%] md:max-w-[50%]">
+            {/* Контент сверху */}
+            <div className="relative z-10 pt-16 md:pt-24 px-6 md:px-16">
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-10 md:mb-16"
+                className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-8 md:mb-12"
               >
                 9 декабря 2023
               </motion.p>
@@ -556,7 +590,7 @@ export default function App() {
                         key={option.id}
                         onClick={() => handleHighfiveAnswer(option.id)}
                         disabled={highfiveAnswer !== null}
-                        className={`flex flex-col items-center gap-4 p-4 md:p-6 border-2 rounded-xl transition-all bg-cream ${
+                        className={`flex flex-col items-center gap-2 border-2 rounded-xl transition-all overflow-hidden bg-cream ${
                           highfiveAnswer === option.id
                             ? 'border-marsala bg-marsala/10'
                             : 'border-chocolate hover:border-marsala'
@@ -565,9 +599,9 @@ export default function App() {
                         <img 
                           src={option.img} 
                           alt={option.label}
-                          className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-lg"
+                          className="w-32 h-28 md:w-40 md:h-32 object-cover"
                         />
-                        <span className="font-serif text-[clamp(1rem,3vw,1.25rem)] text-chocolate">
+                        <span className="font-serif text-[clamp(1rem,3vw,1.25rem)] text-chocolate pb-3 px-4">
                           {option.label}
                         </span>
                       </button>
@@ -625,14 +659,15 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="h-full w-full relative"
           >
-            {/* Фоновая картинка — смещена вниз */}
+            {/* Фоновая картинка — смещена ещё ниже */}
             <img
               src="/images/laughter.png"
               alt=""
-              className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+              style={{ objectPosition: 'center 70%' }}
             />
             {/* Градиент сверху для текста */}
-            <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/60 to-transparent z-0" />
+            <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/50 to-transparent z-0" />
             
             {/* Текст сверху */}
             <div className="relative z-10 pt-16 md:pt-24 px-6 md:px-16">
@@ -665,14 +700,15 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="h-full w-full relative"
           >
-            {/* Фоновая картинка — смещена вниз */}
+            {/* Фоновая картинка — смещена ещё ниже */}
             <img
               src="/images/together.png"
               alt=""
-              className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+              style={{ objectPosition: 'center 75%' }}
             />
             {/* Градиент сверху */}
-            <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/70 to-transparent z-0" />
+            <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/60 to-transparent z-0" />
             
             {/* Контент сверху */}
             <div className="relative z-10 pt-12 md:pt-16 px-6 md:px-16">
@@ -776,7 +812,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full relative flex items-center justify-center"
+            className="h-full w-full relative flex items-center"
           >
             {/* Рамка на весь экран */}
             <motion.img
@@ -788,13 +824,13 @@ export default function App() {
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0" 
             />
             
-            {/* Контент внутри с последовательным появлением */}
-            <div className="relative z-10 text-center px-8 md:px-16 max-w-2xl">
+            {/* Контент слева с последовательным появлением */}
+            <div className="relative z-10 px-8 md:px-16 max-w-xl">
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-6"
+                className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-4"
               >
                 Это была история про нас
               </motion.p>
@@ -803,7 +839,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1 }}
-                className="font-hand text-[clamp(2rem,7vw,4rem)] text-olive italic mb-4"
+                className="font-hand text-[clamp(2.5rem,8vw,4.5rem)] text-olive italic mb-4"
               >
                 Софья и Сергей
               </motion.p>
@@ -812,7 +848,7 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.5, duration: 0.5 }}
-                className="font-serif text-[clamp(3rem,10vw,7rem)] font-semibold text-chocolate leading-none tracking-tight mb-6"
+                className="font-serif text-[clamp(3.5rem,12vw,8rem)] font-semibold text-chocolate leading-none tracking-tight mb-6"
               >
                 30.08.2026
               </motion.p>
@@ -822,10 +858,10 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 2 }}
               >
-                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate mb-1">
+                <p className="font-serif text-[clamp(1.25rem,4vw,1.75rem)] text-chocolate mb-1">
                   Для нас наступает новый этап
                 </p>
-                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-marsala">
+                <p className="font-serif text-[clamp(1.25rem,4vw,1.75rem)] text-marsala">
                   Хотим вступить в него с вами
                 </p>
               </motion.div>
@@ -888,7 +924,7 @@ export default function App() {
                 transition={{ delay: 0.6 }}
                 className="flex flex-col gap-1"
               >
-                <p className="font-serif text-[clamp(1.25rem,4vw,1.5rem)] text-white font-medium">
+                <p className="font-serif text-[clamp(1.5rem,5vw,2rem)] text-white font-semibold">
                   18+
                 </p>
                 <p className="font-serif text-[clamp(1rem,3.5vw,1.25rem)] text-white/70">
@@ -919,58 +955,37 @@ export default function App() {
               <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.5rem)]">дней</p>
             </div>
 
-            {/* Карточки */}
+            {/* Карточки — без фоновых картинок */}
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               {/* Что надеть */}
-              <div className="relative bg-white/70 rounded-xl p-4 overflow-hidden">
-                <img 
-                  src="/images/prep-outfit.png" 
-                  alt="" 
-                  className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
-                />
-                <div className="relative z-10">
-                  <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Что надеть</p>
-                  <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)] mb-2">Приходите в этих оттенках:</p>
-                  <div className="flex gap-2">
-                    <span className="w-6 h-6 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
-                    <span className="w-6 h-6 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
-                    <span className="w-6 h-6 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
-                    <span className="w-6 h-6 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
-                    <span className="w-6 h-6 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
-                  </div>
-                  <p className="font-hand text-olive text-[clamp(0.8rem,2.5vw,0.9rem)] mt-2">Строгой проверки не будет 😉</p>
+              <div className="bg-white/80 rounded-xl p-4">
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Что надеть</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)] mb-2">Приходите в этих оттенках:</p>
+                <div className="flex gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
                 </div>
+                <p className="font-hand text-olive text-[clamp(0.8rem,2.5vw,0.9rem)] mt-2">Строгой проверки не будет 😉</p>
               </div>
               
               {/* Подарки */}
-              <div className="relative bg-white/70 rounded-xl p-4 overflow-hidden">
-                <img 
-                  src="/images/prep-gifts.png" 
-                  alt="" 
-                  className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
-                />
-                <div className="relative z-10">
-                  <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Подарки</p>
-                  <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)]">
-                    Мы мечтаем о своём жилье. Благодарны любому вкладу, который приблизит нас к этому.
-                  </p>
-                </div>
+              <div className="bg-white/80 rounded-xl p-4">
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Подарки</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)]">
+                  Мы мечтаем о своём жилье. Благодарны любому вкладу, который приблизит нас к этому.
+                </p>
               </div>
               
               {/* Что взять */}
-              <div className="relative bg-white/70 rounded-xl p-4 overflow-hidden col-span-2">
-                <img 
-                  src="/images/prep-bring.png" 
-                  alt="" 
-                  className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
-                />
-                <div className="relative z-10">
-                  <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Что взять с собой</p>
-                  <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)]">
-                    ✓ Хорошее настроение · ✓ Сменную обувь для танцев · ✓ Что-то тёплое на вечер
-                  </p>
-                  <p className="font-hand text-olive text-[clamp(0.8rem,2.5vw,0.9rem)] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
-                </div>
+              <div className="bg-white/80 rounded-xl p-4 col-span-2">
+                <p className="font-serif text-chocolate font-semibold text-[clamp(1rem,3.5vw,1.25rem)] mb-2">Что взять с собой</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(0.85rem,3vw,1rem)]">
+                  ✓ Хорошее настроение · ✓ Сменную обувь для танцев · ✓ Что-то тёплое на вечер
+                </p>
+                <p className="font-hand text-olive text-[clamp(0.8rem,2.5vw,0.9rem)] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
               </div>
             </div>
           </motion.div>
@@ -985,74 +1000,74 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="h-full w-full flex flex-col justify-center px-6 md:px-16"
           >
-            <h2 className="font-hand text-marsala text-[clamp(2rem,7vw,3rem)] mb-4 md:mb-6">Шпаргалка</h2>
+            <h2 className="font-hand text-marsala text-[clamp(2.5rem,8vw,3.5rem)] mb-5 md:mb-6">Шпаргалка</h2>
 
-            <div className="grid grid-cols-2 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 gap-4 md:gap-5">
               {/* Когда */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <p className="font-serif text-olive text-xs uppercase tracking-wide mb-1">Когда</p>
-                <p className="font-serif text-chocolate text-[clamp(1.1rem,4vw,1.5rem)] font-semibold leading-tight">
+              <div className="bg-white rounded-xl p-5 shadow-sm">
+                <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Когда</p>
+                <p className="font-serif text-chocolate text-[clamp(1.25rem,4.5vw,1.75rem)] font-semibold leading-tight">
                   30 августа
                 </p>
-                <p className="font-serif text-chocolate text-[clamp(0.9rem,3vw,1.1rem)]">суббота</p>
-                <p className="font-serif text-chocolate/70 text-[clamp(0.8rem,2.5vw,0.9rem)] mt-1">14:30 — 22:30</p>
+                <p className="font-serif text-chocolate text-[clamp(1rem,3.5vw,1.25rem)]">суббота</p>
+                <p className="font-serif text-chocolate/70 text-[clamp(0.9rem,3vw,1rem)] mt-2">14:30 — 22:30</p>
               </div>
 
               {/* Где */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <p className="font-serif text-olive text-xs uppercase tracking-wide mb-1">Где</p>
-                <p className="font-serif text-chocolate text-[clamp(1.1rem,4vw,1.5rem)] font-semibold">
+              <div className="bg-white rounded-xl p-5 shadow-sm">
+                <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Где</p>
+                <p className="font-serif text-chocolate text-[clamp(1.25rem,4.5vw,1.75rem)] font-semibold">
                   Due To Love
                 </p>
                 <a 
                   href="https://yandex.ru/maps/-/CLhzMN9F" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-block font-serif text-marsala text-[clamp(0.8rem,2.5vw,0.9rem)] mt-1 underline"
+                  className="inline-block font-serif text-marsala text-[clamp(0.9rem,3vw,1rem)] mt-2 underline"
                 >
                   Маршрут →
                 </a>
               </div>
 
               {/* Что надеть */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <p className="font-serif text-olive text-xs uppercase tracking-wide mb-2">Что надеть</p>
+              <div className="bg-white rounded-xl p-5 shadow-sm">
+                <p className="font-serif text-olive text-sm uppercase tracking-wide mb-3">Что надеть</p>
                 <div className="flex gap-2">
-                  <span className="w-5 h-5 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
-                  <span className="w-5 h-5 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
-                  <span className="w-5 h-5 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
-                  <span className="w-5 h-5 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
-                  <span className="w-5 h-5 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
+                  <span className="w-6 h-6 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
                 </div>
               </div>
 
               {/* Что взять */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <p className="font-serif text-olive text-xs uppercase tracking-wide mb-1">Что взять</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(0.8rem,2.5vw,0.9rem)]">
+              <div className="bg-white rounded-xl p-5 shadow-sm">
+                <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Что взять</p>
+                <p className="font-serif text-chocolate/80 text-[clamp(0.9rem,3vw,1rem)]">
                   Настроение · Сменку · Тёплое
                 </p>
               </div>
 
               {/* Вопросы */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <p className="font-serif text-olive text-xs uppercase tracking-wide mb-2">Вопросы?</p>
+              <div className="bg-white rounded-xl p-5 shadow-sm">
+                <p className="font-serif text-olive text-sm uppercase tracking-wide mb-3">Вопросы?</p>
                 <a 
-                  href="https://t.me/wedding_bot" 
+                  href="https://t.me/wedding_sofya_sergey" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block font-serif text-cream bg-olive py-2 px-3 rounded-lg text-[clamp(0.8rem,2.5vw,0.9rem)]"
+                  className="inline-block font-serif text-cream bg-olive py-2 px-4 rounded-lg text-[clamp(0.9rem,3vw,1rem)]"
                 >
                   💬 Бот ответит
                 </a>
               </div>
 
               {/* Контакт */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <p className="font-serif text-olive text-xs uppercase tracking-wide mb-1">Контакт</p>
+              <div className="bg-white rounded-xl p-5 shadow-sm">
+                <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Контакт</p>
                 <a 
                   href="tel:+79991621492"
-                  className="font-serif text-chocolate text-[clamp(0.9rem,3vw,1.1rem)] font-medium"
+                  className="font-serif text-chocolate text-[clamp(1rem,3.5vw,1.25rem)] font-medium"
                 >
                   +7 999 162-14-92
                 </a>
@@ -1202,9 +1217,9 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Транспорт */}
+                  {/* Как добираюсь */}
                   <div>
-                    <p className="font-serif text-chocolate mb-2">Транспорт</p>
+                    <p className="font-serif text-chocolate mb-2">Как добираюсь?</p>
                     <div className="flex gap-2 flex-wrap">
                       {['Машина', 'Такси', 'Трансфер'].map((option) => (
                         <button
@@ -1235,14 +1250,30 @@ export default function App() {
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-center"
+                className="text-center relative"
               >
-                <p className="font-serif text-[clamp(2.5rem,9vw,5rem)] font-semibold text-chocolate mb-4">
-                  {formData.rating >= 5 ? 'Ждём вас!' : 'Спасибо!'}
+                <FloatingHearts />
+                
+                <motion.p 
+                  initial={{ y: 20 }}
+                  animate={{ y: 0 }}
+                  className="font-serif text-[clamp(3rem,10vw,6rem)] font-semibold text-chocolate mb-4"
+                >
+                  {formData.rating >= 5 ? '💕 Ждём вас!' : '💌 Спасибо!'}
+                </motion.p>
+                <p className="font-hand text-olive text-[clamp(1.5rem,5vw,2rem)] mb-6">
+                  {formData.rating >= 5 
+                    ? 'Будет здорово увидеться!' 
+                    : 'Если планы изменятся — возвращайтесь'}
                 </p>
-                <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.75rem)]">
-                  Если планы изменятся — возвращайтесь
-                </p>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.5rem)]"
+                >
+                  Софья и Сергей ♥
+                </motion.div>
               </motion.div>
             )}
           </motion.div>
