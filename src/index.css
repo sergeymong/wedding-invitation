@@ -1,9 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Caveat:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --cream: #F5F0E6;
+  --marsala: #722F37;
+  --olive: #5C6B4A;
+  --chocolate: #3D2B1F;
+  --gold: #C9A227;
+}
+
 * {
-  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html {
@@ -11,18 +23,83 @@ html {
 }
 
 body {
-  font-family: 'Cormorant Garamond', serif;
-  background-color: #F5F0E8;
-  color: #4A3728;
-  overflow-x: hidden;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background-color: var(--cream);
+  color: var(--chocolate);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.touch-pan-y {
-  touch-action: pan-y;
+/* Font utilities */
+.font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
-@layer utilities {
-  .text-shadow {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.font-hand {
+  font-family: 'Caveat', cursive;
+}
+
+/* Color utilities */
+.bg-cream { background-color: var(--cream); }
+.bg-marsala { background-color: var(--marsala); }
+.bg-olive { background-color: var(--olive); }
+.bg-chocolate { background-color: var(--chocolate); }
+.bg-gold { background-color: var(--gold); }
+
+.text-cream { color: var(--cream); }
+.text-marsala { color: var(--marsala); }
+.text-olive { color: var(--olive); }
+.text-chocolate { color: var(--chocolate); }
+.text-gold { color: var(--gold); }
+
+.border-cream { border-color: var(--cream); }
+.border-marsala { border-color: var(--marsala); }
+.border-olive { border-color: var(--olive); }
+.border-chocolate { border-color: var(--chocolate); }
+.border-gold { border-color: var(--gold); }
+
+/* Hide scrollbar but keep functionality */
+.overflow-x-auto::-webkit-scrollbar {
+  display: none;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: var(--olive);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+/* Smooth transitions */
+button, a {
+  transition: all 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+/* Input focus states */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--olive);
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  accent-color: var(--marsala);
+}
+
+/* Mobile viewport fix */
+@supports (height: 100dvh) {
+  .h-screen {
+    height: 100dvh;
   }
 }
