@@ -53,16 +53,35 @@ const preloadScreen = (screenIndex) => {
 // Google Sheets API
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrJZh400sy4K-AoMhTzGgd_3TqE63YGv__NP30Cq5hrYm31csZw247FGnmC6HjoxlR/exec'
 
-// Получаем имя гостя из URL
-const getGuestFromURL = () => {
+// Получаем имена гостей из URL
+// Форматы: ?guest=имя-фамилия или ?guest=имя-фамилия&guest2=имя-фамилия
+const formatName = (slug) => {
+  if (!slug) return ''
+  return slug.split('-').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ')
+}
+
+const getGuestsFromURL = () => {
   const params = new URLSearchParams(window.location.search)
-  const guest = params.get('guest')
-  if (guest) {
-    return guest.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
+  const guest1 = formatName(params.get('guest'))
+  const guest2 = formatName(params.get('guest2'))
+  return { guest1, guest2, hasCouple: !!guest2 }
+}
+
+// Проверяем, просматривал ли пользователь историю ранее
+const STORAGE_KEY = 'wedding_story_viewed'
+const hasViewedStory = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'true'
+  } catch {
+    return false
   }
-  return ''
+}
+const markStoryViewed = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, 'true')
+  } catch {}
 }
 
 // Конфиг экранов
@@ -244,7 +263,8 @@ function FloatingHearts() {
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(0)
-  const [guestName] = useState(getGuestFromURL)
+  const [guests] = useState(getGuestsFromURL)
+  const [storyViewed, setStoryViewed] = useState(hasViewedStory)
   
   // Интерактив экран 2
   const [storyAnswer, setStoryAnswer] = useState(null)
@@ -257,12 +277,12 @@ export default function App() {
   // Счётчик дней экран 6
   const [displayDays, setDisplayDays] = useState(0)
   
-  // RSVP форма
+  // RSVP форма — автозаполнение для пар
   const [formData, setFormData] = useState({
-    name: guestName,
+    name: guests.guest1,
     rating: null,
-    withGuest: false,
-    guestName: '',
+    withGuest: guests.hasCouple,
+    guestName: guests.guest2,
     food: [],
     alcohol: [],
     transport: '',
@@ -272,6 +292,14 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   const [touchStart, setTouchStart] = useState(0)
+
+  // Отмечаем просмотр истории когда доходим до экрана приглашения (7)
+  useEffect(() => {
+    if (currentScreen >= 7 && !storyViewed) {
+      markStoryViewed()
+      setStoryViewed(true)
+    }
+  }, [currentScreen, storyViewed])
 
   // ===== PRELOAD ИЗОБРАЖЕНИЙ =====
   // При старте — загружаем первые 3 экрана
@@ -482,7 +510,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
-              className="absolute bottom-8 left-6 md:left-16 z-20 flex flex-col items-start"
+              className="absolute bottom-8 left-6 md:left-16 z-20 flex flex-col items-start gap-3"
             >
               <motion.p
                 animate={{ y: [0, 5, 0] }}
@@ -491,6 +519,19 @@ export default function App() {
               >
                 листай ↓
               </motion.p>
+              
+              {/* Кнопка для тех, кто уже смотрел */}
+              {storyViewed && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  onClick={() => setCurrentScreen(11)}
+                  className="font-serif text-sm text-chocolate/60 hover:text-marsala underline underline-offset-2 transition-colors"
+                >
+                  сразу к форме →
+                </motion.button>
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -1139,7 +1180,7 @@ export default function App() {
               <div className="bg-white rounded-xl p-5 shadow-sm">
                 <p className="font-serif text-olive text-sm uppercase tracking-wide mb-3">Вопросы?</p>
                 <a 
-                  href="https://t.me/wedding_sofya_sergey" 
+                  href="https://t.me/wedding_sofya_sergey_bot" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block font-serif text-cream bg-olive py-2 px-4 rounded-lg text-[clamp(0.9rem,3vw,1rem)]"
