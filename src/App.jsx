@@ -1159,7 +1159,7 @@ export default function App() {
                 <p className="font-serif text-chocolate text-[1.25rem] font-semibold leading-tight">
                   30&nbsp;августа
                 </p>
-                <p className="font-serif text-chocolate text-[1rem]">суббота</p>
+                <p className="font-serif text-chocolate text-[1rem]">воскресенье</p>
                 <p className="font-serif text-chocolate/70 text-[0.9rem] mt-2">14:30 — 22:30</p>
               </div>
 
