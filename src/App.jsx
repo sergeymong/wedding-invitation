@@ -54,7 +54,7 @@ const preloadScreen = (screenIndex) => {
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrJZh400sy4K-AoMhTzGgd_3TqE63YGv__NP30Cq5hrYm31csZw247FGnmC6HjoxlR/exec'
 
 // Получаем имена гостей из URL
-// Форматы: ?guest=имя-фамилия или ?guest=имя-фамилия&guest2=имя-фамилия
+// Формат: ?guest=имя-фамилия или ?guest=имя-фамилия,имя-фамилия (для пар)
 const formatName = (slug) => {
   if (!slug) return ''
   return slug.split('-').map(word => 
@@ -64,9 +64,13 @@ const formatName = (slug) => {
 
 const getGuestsFromURL = () => {
   const params = new URLSearchParams(window.location.search)
-  const guest1 = formatName(params.get('guest'))
-  const guest2 = formatName(params.get('guest2'))
-  return { guest1, guest2, hasCouple: !!guest2 }
+  const guestParam = params.get('guest') || ''
+  const guests = guestParam.split(',').map(formatName).filter(Boolean)
+  return { 
+    guest1: guests[0] || '', 
+    guest2: guests[1] || '', 
+    hasCouple: guests.length > 1 
+  }
 }
 
 // Проверяем, просматривал ли пользователь историю ранее
@@ -436,7 +440,7 @@ export default function App() {
 
   return (
     <div 
-      className="h-screen w-screen overflow-hidden bg-cream touch-pan-y"
+      className="h-screen w-full max-w-md mx-auto overflow-hidden bg-cream touch-pan-y"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
