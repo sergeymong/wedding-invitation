@@ -495,7 +495,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-chocolate mb-6 md:mb-10"
+                className="font-serif text-[1.5rem] text-chocolate mb-6 md:mb-10"
               >
                 Тут кое-что намечается
               </motion.p>
@@ -503,7 +503,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="font-serif text-[clamp(4rem,15vw,10rem)] font-semibold text-chocolate leading-none tracking-tight"
+                className="font-serif text-[4rem] font-semibold text-chocolate leading-none tracking-tight"
               >
                 30.08.2026
               </motion.p>
@@ -563,7 +563,7 @@ export default function App() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-8 md:mb-12"
+                className="font-hand text-marsala text-[1.5rem] mb-8 md:mb-12"
               >
                 февраль 2023
               </motion.p>
@@ -574,13 +574,13 @@ export default function App() {
                 transition={{ delay: 0.2 }}
                 className="mb-8 md:mb-10"
               >
-                <p className="font-serif text-[clamp(2rem,6vw,4rem)] font-medium text-chocolate leading-tight">
+                <p className="font-serif text-[2rem] font-medium text-chocolate leading-tight">
                   Это история любви
                 </p>
-                <p className="font-serif text-[clamp(2rem,6vw,4rem)] font-medium text-chocolate leading-tight">
+                <p className="font-serif text-[2rem] font-medium text-chocolate leading-tight">
                   с первого взгляда
                 </p>
-                <p className="font-hand text-[clamp(1.5rem,5vw,2.5rem)] text-olive mt-3 italic">
+                <p className="font-hand text-[1.5rem] text-olive mt-3 italic">
                   Почти.
                 </p>
               </motion.div>
@@ -591,7 +591,7 @@ export default function App() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-5">
+                  <p className="font-serif text-[1.1rem] text-chocolate/80 mb-5">
                     Она впервые увидела его фото и подумала:
                   </p>
                   <div className="flex flex-col gap-3">
@@ -603,7 +603,7 @@ export default function App() {
                         transition={{ delay: 0.6 + i * 0.1 }}
                         onClick={() => handleStoryAnswer(answer)}
                         disabled={storyAnswer !== null}
-                        className={`text-left font-serif text-[clamp(1.1rem,3.5vw,1.4rem)] py-4 px-5 border-2 rounded-lg transition-all ${
+                        className={`text-left font-serif text-[1.1rem] py-4 px-5 border-2 rounded-lg transition-all ${
                           storyAnswer === answer 
                             ? 'bg-marsala text-cream border-marsala' 
                             : 'border-chocolate text-chocolate hover:border-marsala bg-cream/80'
@@ -619,10 +619,10 @@ export default function App() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                  <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-4">
+                  <p className="font-serif text-[1.1rem] text-chocolate/80 mb-4">
                     Она впервые увидела его фото и подумала:
                   </p>
-                  <p className="font-serif text-[clamp(2.5rem,8vw,5rem)] font-semibold text-marsala italic">
+                  <p className="font-serif text-[2.5rem] font-semibold text-marsala italic">
                     «Точно нет»
                   </p>
                 </motion.div>
@@ -654,7 +654,7 @@ export default function App() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-8 md:mb-12"
+                className="font-hand text-marsala text-[1.5rem] mb-8 md:mb-12"
               >
                 9 декабря 2023
               </motion.p>
@@ -664,13 +664,13 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] font-medium text-chocolate mb-3">
+                <p className="font-serif text-[1.5rem] font-medium text-chocolate mb-3">
                   Он зашёл в квартиру
                 </p>
-                <p className="font-serif text-[clamp(2rem,6vw,4rem)] font-semibold text-chocolate leading-tight">
+                <p className="font-serif text-[2rem] font-semibold text-chocolate leading-tight">
                   Ещё до приветствия
                 </p>
-                <p className="font-serif text-[clamp(2rem,6vw,4rem)] font-semibold text-marsala leading-tight">
+                <p className="font-serif text-[2rem] font-semibold text-marsala leading-tight">
                   она всё поняла
                 </p>
               </motion.div>
@@ -693,7 +693,7 @@ export default function App() {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-8 md:mb-12"
+                  className="font-hand text-marsala text-[1.5rem] mb-8 md:mb-12"
                 >
                   минуту спустя
                 </motion.p>
@@ -703,10 +703,10 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <p className="font-serif text-[clamp(1.75rem,6vw,3rem)] font-medium text-chocolate mb-3">
+                  <p className="font-serif text-[1.75rem] font-medium text-chocolate mb-3">
                     Их первое взаимодействие
                   </p>
-                  <p className="font-serif text-[clamp(1.25rem,4vw,1.75rem)] text-chocolate/80 mb-8">
+                  <p className="font-serif text-[1.25rem] text-chocolate/80 mb-8">
                     Нужно поздороваться. Как они это сделали?
                   </p>
                   <div className="flex gap-4 md:gap-6">
@@ -731,7 +731,7 @@ export default function App() {
                         />
                         {/* Надпись поверх картинки */}
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-chocolate/80 to-transparent py-3 px-2">
-                          <span className="font-serif text-[clamp(0.9rem,3vw,1.1rem)] text-cream">
+                          <span className="font-serif text-[0.9rem] text-cream">
                             {option.label}
                           </span>
                         </div>
@@ -756,13 +756,13 @@ export default function App() {
                   className="relative z-10 h-full flex flex-col justify-between py-16 px-6 md:px-16"
                 >
                   <div>
-                    <p className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-6">
+                    <p className="font-hand text-marsala text-[1.5rem] mb-6">
                       минуту спустя
                     </p>
-                    <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-chocolate mb-2">
+                    <p className="font-serif text-[1.5rem] text-chocolate mb-2">
                       Она протянула руку,
                     </p>
-                    <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-chocolate">
+                    <p className="font-serif text-[1.5rem] text-chocolate">
                       а он — дал пять
                     </p>
                   </div>
@@ -771,7 +771,7 @@ export default function App() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="font-hand text-[clamp(2rem,6vw,3rem)] text-olive text-center"
+                    className="font-hand text-[2rem] text-olive text-center"
                   >
                     Вышло идеально
                   </motion.p>
@@ -807,14 +807,14 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <p className="font-serif text-[clamp(2rem,7vw,4rem)] font-medium text-chocolate mb-1">
+                <p className="font-serif text-[2rem] font-medium text-chocolate mb-1">
                   В этот момент
                 </p>
-                <p className="font-serif text-[clamp(2rem,7vw,4rem)] font-medium text-chocolate">
+                <p className="font-serif text-[2rem] font-medium text-chocolate">
                   они засмеялись
                 </p>
                 <div className="w-16 h-0.5 bg-gold my-6 md:my-8" />
-                <p className="font-serif text-[clamp(1.5rem,5vw,2.5rem)] text-marsala italic">
+                <p className="font-serif text-[1.5rem] text-marsala italic">
                   и с этого всё началось
                 </p>
               </motion.div>
@@ -846,7 +846,7 @@ export default function App() {
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="font-serif text-[clamp(5rem,16vw,10rem)] font-semibold text-chocolate leading-none tracking-tight"
+                className="font-serif text-[5rem] font-semibold text-chocolate leading-none tracking-tight"
               >
                 {displayDays}
               </motion.p>
@@ -854,7 +854,7 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="font-hand text-olive text-[clamp(1.5rem,5vw,2.5rem)] mt-1 mb-6"
+                className="font-hand text-olive text-[1.5rem] mt-1 mb-6"
               >
                 дней вместе
               </motion.p>
@@ -864,13 +864,13 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <p className="font-serif text-[clamp(1.25rem,4vw,2rem)] font-medium text-chocolate mb-1">
+                <p className="font-serif text-[1.25rem] font-medium text-chocolate mb-1">
                   С того дня прошло 2 года
                 </p>
-                <p className="font-serif text-[clamp(1.1rem,3.5vw,1.5rem)] text-chocolate/80 mb-4">
+                <p className="font-serif text-[1.1rem] text-chocolate/80 mb-4">
                   Ни одного дня друг без друга
                 </p>
-                <p className="font-hand text-[clamp(1.75rem,6vw,3rem)] text-marsala italic">
+                <p className="font-hand text-[1.75rem] text-marsala italic">
                   И что дальше?
                 </p>
               </motion.div>
@@ -906,7 +906,7 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="font-hand text-gold text-[clamp(1.5rem,5vw,2rem)] mb-6 md:mb-10"
+                className="font-hand text-gold text-[1.5rem] mb-6 md:mb-10"
               >
                 декабрь 2025
               </motion.p>
@@ -915,7 +915,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="font-serif text-[clamp(1.25rem,4vw,2rem)] text-white/85 mb-6 md:mb-8"
+                className="font-serif text-[1.25rem] text-white/85 mb-6 md:mb-8"
               >
                 Загородный дом. Гирлянды. Танец.
               </motion.p>
@@ -925,10 +925,10 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
-                <p className="font-serif text-[clamp(2.5rem,8vw,5rem)] font-semibold text-white leading-tight drop-shadow-lg">
+                <p className="font-serif text-[2.5rem] font-semibold text-white leading-tight drop-shadow-lg">
                   Она сказала
                 </p>
-                <p className="font-serif text-[clamp(4rem,14vw,10rem)] font-bold text-gold leading-none italic drop-shadow-xl">
+                <p className="font-serif text-[4rem] font-bold text-gold leading-none italic drop-shadow-xl">
                   «да»
                 </p>
               </motion.div>
@@ -961,7 +961,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="font-hand text-marsala text-[clamp(1.5rem,5vw,2rem)] mb-4"
+                className="font-hand text-marsala text-[1.5rem] mb-4"
               >
                 Это была история про нас
               </motion.p>
@@ -970,7 +970,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1 }}
-                className="font-hand text-[clamp(2.5rem,8vw,4.5rem)] text-olive italic mb-4"
+                className="font-hand text-[2.5rem] text-olive italic mb-4"
               >
                 Софья и Сергей
               </motion.p>
@@ -979,7 +979,7 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.5, duration: 0.5 }}
-                className="font-serif text-[clamp(3.5rem,12vw,8rem)] font-semibold text-chocolate leading-none tracking-tight mb-6"
+                className="font-serif text-[3.5rem] font-semibold text-chocolate leading-none tracking-tight mb-6"
               >
                 30.08.2026
               </motion.p>
@@ -989,10 +989,10 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 2 }}
               >
-                <p className="font-serif text-[clamp(1.25rem,4vw,1.75rem)] text-chocolate mb-1">
+                <p className="font-serif text-[1.25rem] text-chocolate mb-1">
                   Для нас наступает новый этап
                 </p>
-                <p className="font-serif text-[clamp(1.25rem,4vw,1.75rem)] text-marsala">
+                <p className="font-serif text-[1.25rem] text-marsala">
                   Хотим вступить в него с вами
                 </p>
               </motion.div>
@@ -1025,7 +1025,7 @@ export default function App() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-hand text-gold text-[clamp(1.5rem,5vw,2rem)] mb-4"
+                className="font-hand text-gold text-[1.5rem] mb-4"
               >
                 И мы уже знаем, где это случится
               </motion.p>
@@ -1034,7 +1034,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-serif text-[clamp(3rem,12vw,8rem)] font-semibold text-white leading-none mb-4 md:mb-6 drop-shadow-lg"
+                className="font-serif text-[3rem] font-semibold text-white leading-none mb-4 md:mb-6 drop-shadow-lg"
               >
                 Due To Love
               </motion.h2>
@@ -1043,7 +1043,7 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="font-serif text-[clamp(1.25rem,4vw,1.75rem)] text-white/90 max-w-lg mb-4 leading-relaxed"
+                className="font-serif text-[1.25rem] text-white/90 max-w-lg mb-4 leading-relaxed"
               >
                 Место, где природа встречается с уютом.<br/>
                 Где можно выдохнуть и просто быть рядом.
@@ -1055,10 +1055,10 @@ export default function App() {
                 transition={{ delay: 0.6 }}
                 className="flex flex-col gap-1"
               >
-                <p className="font-serif text-[clamp(1.5rem,5vw,2rem)] text-white font-semibold">
+                <p className="font-serif text-[1.5rem] text-white font-semibold">
                   18+
                 </p>
-                <p className="font-serif text-[clamp(1rem,3.5vw,1.25rem)] text-white/70">
+                <p className="font-serif text-[1rem] text-white/70">
                   Москва, 15 км от МКАД · можно с парой
                 </p>
               </motion.div>
@@ -1080,18 +1080,18 @@ export default function App() {
               <p className="font-serif text-olive text-lg md:text-xl uppercase tracking-widest mb-1">
                 До встречи осталось
               </p>
-              <p className="font-serif text-[clamp(4rem,14vw,8rem)] font-semibold text-chocolate leading-none">
+              <p className="font-serif text-[4rem] font-semibold text-chocolate leading-none">
                 {getDaysUntilWedding()}
               </p>
-              <p className="font-hand text-olive text-[clamp(1.75rem,6vw,2.5rem)]">дней</p>
+              <p className="font-hand text-olive text-[1.75rem]">дней</p>
             </div>
 
             {/* Контент без плиток — КРУПНЫЕ шрифты */}
             <div className="space-y-6 md:space-y-8">
               {/* Что надеть */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.75rem,6vw,2.5rem)] mb-2">Что надеть</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1.4rem,4.5vw,1.75rem)] mb-3">Приходите в этих оттенках:</p>
+                <p className="font-serif text-chocolate font-semibold text-[1.75rem] mb-2">Что надеть</p>
+                <p className="font-serif text-chocolate/80 text-[1.4rem] mb-3">Приходите в этих оттенках:</p>
                 <div className="flex gap-4">
                   <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
                   <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
@@ -1099,24 +1099,24 @@ export default function App() {
                   <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
                   <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
                 </div>
-                <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.5rem)] mt-2">Строгой проверки не будет</p>
+                <p className="font-hand text-olive text-[1.25rem] mt-2">Строгой проверки не будет</p>
               </div>
               
               {/* Подарки */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.75rem,6vw,2.5rem)] mb-2">Подарки</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1.4rem,4.5vw,1.75rem)]">
+                <p className="font-serif text-chocolate font-semibold text-[1.75rem] mb-2">Подарки</p>
+                <p className="font-serif text-chocolate/80 text-[1.4rem]">
                   Мы мечтаем о своём жилье. Благодарны любому вкладу, который приблизит нас к этому.
                 </p>
               </div>
               
               {/* Что взять */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[clamp(1.75rem,6vw,2.5rem)] mb-2">Что взять с собой</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(1.4rem,4.5vw,1.75rem)]">
+                <p className="font-serif text-chocolate font-semibold text-[1.75rem] mb-2">Что взять с собой</p>
+                <p className="font-serif text-chocolate/80 text-[1.4rem]">
                   Хорошее настроение, сменную обувь для танцев и что-то тёплое на вечер.
                 </p>
-                <p className="font-hand text-olive text-[clamp(1.25rem,4vw,1.5rem)] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
+                <p className="font-hand text-olive text-[1.25rem] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
               </div>
             </div>
           </motion.div>
@@ -1131,30 +1131,30 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="h-full w-full flex flex-col justify-center px-6 md:px-16"
           >
-            <h2 className="font-hand text-marsala text-[clamp(2.5rem,8vw,3.5rem)] mb-5 md:mb-6">Шпаргалка</h2>
+            <h2 className="font-hand text-marsala text-[2.5rem] mb-5 md:mb-6">Шпаргалка</h2>
 
             <div className="grid grid-cols-2 gap-4 md:gap-5">
               {/* Когда */}
               <div className="bg-white rounded-xl p-5 shadow-sm">
                 <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Когда</p>
-                <p className="font-serif text-chocolate text-[clamp(1.25rem,4.5vw,1.75rem)] font-semibold leading-tight">
+                <p className="font-serif text-chocolate text-[1.25rem] font-semibold leading-tight">
                   30 августа
                 </p>
-                <p className="font-serif text-chocolate text-[clamp(1rem,3.5vw,1.25rem)]">суббота</p>
-                <p className="font-serif text-chocolate/70 text-[clamp(0.9rem,3vw,1rem)] mt-2">14:30 — 22:30</p>
+                <p className="font-serif text-chocolate text-[1rem]">суббота</p>
+                <p className="font-serif text-chocolate/70 text-[0.9rem] mt-2">14:30 — 22:30</p>
               </div>
 
               {/* Где */}
               <div className="bg-white rounded-xl p-5 shadow-sm">
                 <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Где</p>
-                <p className="font-serif text-chocolate text-[clamp(1.25rem,4.5vw,1.75rem)] font-semibold">
+                <p className="font-serif text-chocolate text-[1.25rem] font-semibold">
                   Due To Love
                 </p>
                 <a 
                   href="https://yandex.ru/maps/-/CLhzMN9F" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-block font-serif text-marsala text-[clamp(0.9rem,3vw,1rem)] mt-2 underline"
+                  className="inline-block font-serif text-marsala text-[0.9rem] mt-2 underline"
                 >
                   Маршрут →
                 </a>
@@ -1175,7 +1175,7 @@ export default function App() {
               {/* Что взять */}
               <div className="bg-white rounded-xl p-5 shadow-sm">
                 <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Что взять</p>
-                <p className="font-serif text-chocolate/80 text-[clamp(0.9rem,3vw,1rem)]">
+                <p className="font-serif text-chocolate/80 text-[0.9rem]">
                   Настроение · Сменку · Тёплое
                 </p>
               </div>
@@ -1187,7 +1187,7 @@ export default function App() {
                   href="https://t.me/wedding_sofya_sergey_bot" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block font-serif text-cream bg-olive py-2 px-4 rounded-lg text-[clamp(0.9rem,3vw,1rem)]"
+                  className="inline-block font-serif text-cream bg-olive py-2 px-4 rounded-lg text-[0.9rem]"
                 >
                   Бот ответит
                 </a>
@@ -1198,7 +1198,7 @@ export default function App() {
                 <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Контакт</p>
                 <a 
                   href="tel:+79991621492"
-                  className="font-serif text-chocolate text-[clamp(1rem,3.5vw,1.25rem)] font-medium"
+                  className="font-serif text-chocolate text-[1rem] font-medium"
                 >
                   +7 999 162-14-92
                 </a>
@@ -1218,12 +1218,12 @@ export default function App() {
           >
             {!formSubmitted ? (
               <>
-                <h2 className="font-serif text-[clamp(2.5rem,9vw,4rem)] font-semibold text-chocolate mb-2">
+                <h2 className="font-serif text-[2.5rem] font-semibold text-chocolate mb-2">
                   Придёте?
                 </h2>
                 
                 {/* Дедлайн — крупный, стилизованный */}
-                <p className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.75rem)] mb-6 border-b-2 border-marsala/30 pb-2 inline-block">
+                <p className="font-hand text-marsala text-[1.25rem] mb-6 border-b-2 border-marsala/30 pb-2 inline-block">
                   Ждём ответа до 1 мая
                 </p>
 
@@ -1389,11 +1389,11 @@ export default function App() {
                   <motion.p 
                     initial={{ y: 20 }}
                     animate={{ y: 0 }}
-                    className="font-serif text-[clamp(3rem,10vw,6rem)] font-semibold text-chocolate mb-4"
+                    className="font-serif text-[3rem] font-semibold text-chocolate mb-4"
                   >
                     {formData.rating >= 5 ? 'Ждём вас!' : 'Спасибо!'}
                   </motion.p>
-                  <p className="font-hand text-olive text-[clamp(1.5rem,5vw,2rem)] mb-6">
+                  <p className="font-hand text-olive text-[1.5rem] mb-6">
                     {formData.rating >= 5 
                       ? 'Будем рады разделить этот день с вами!' 
                       : 'Если планы изменятся — возвращайтесь'}
@@ -1402,7 +1402,7 @@ export default function App() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="font-hand text-marsala text-[clamp(1.25rem,4vw,1.5rem)]"
+                    className="font-hand text-marsala text-[1.25rem]"
                   >
                     Софья и Сергей
                   </motion.p>
