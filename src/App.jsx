@@ -3,30 +3,30 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 // ===== PRELOAD СИСТЕМА =====
 const allImages = [
-  '/images/frame.png',           // 0 - intro
-  '/images/story-start.png',     // 1 - story-start
-  '/images/first-meeting.png',   // 2 - first-meeting
-  '/images/handshake-btn.png',   // 3 - highfive
-  '/images/highfive-btn.png',    // 3 - highfive
-  '/images/highfive-result.png', // 3 - highfive
-  '/images/laughter.png',        // 4 - laughter
-  '/images/together.png',        // 5 - together
-  '/images/proposal.png',        // 6 - proposal
-  '/images/invitation.png',      // 7 - invitation
-  '/images/venue.png',           // 8 - venue
+  './images/frame.png',           // 0 - intro
+  './images/story-start.png',     // 1 - story-start
+  './images/first-meeting.png',   // 2 - first-meeting
+  './images/handshake-btn.png',   // 3 - highfive
+  './images/highfive-btn.png',    // 3 - highfive
+  './images/highfive-result.png', // 3 - highfive
+  './images/laughter.png',        // 4 - laughter
+  './images/together.png',        // 5 - together
+  './images/proposal.png',        // 6 - proposal
+  './images/invitation.png',      // 7 - invitation
+  './images/venue.png',           // 8 - venue
 ]
 
 // Карта: какие картинки нужны для какого экрана
 const screenImages = {
-  0: ['/images/frame.png'],
-  1: ['/images/story-start.png'],
-  2: ['/images/first-meeting.png'],
-  3: ['/images/handshake-btn.png', '/images/highfive-btn.png', '/images/highfive-result.png'],
-  4: ['/images/laughter.png'],
-  5: ['/images/together.png'],
-  6: ['/images/proposal.png'],
-  7: ['/images/invitation.png'],
-  8: ['/images/venue.png'],
+  0: ['./images/frame.png'],
+  1: ['./images/story-start.png'],
+  2: ['./images/first-meeting.png'],
+  3: ['./images/handshake-btn.png', './images/highfive-btn.png', './images/highfive-result.png'],
+  4: ['./images/laughter.png'],
+  5: ['./images/together.png'],
+  6: ['./images/proposal.png'],
+  7: ['./images/invitation.png'],
+  8: ['./images/venue.png'],
 }
 
 const loadedImages = new Set()
@@ -482,7 +482,7 @@ export default function App() {
               className="absolute inset-0 z-0"
             >
               <img 
-                src="/images/frame.png" 
+                src="./images/frame.png" 
                 alt="" 
                 className="w-full h-full object-cover pointer-events-none" 
               />
@@ -551,7 +551,7 @@ export default function App() {
           >
             {/* Фоновая картинка на весь экран */}
             <img
-              src="/images/story-start.png"
+              src="./images/story-start.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
             />
@@ -642,7 +642,7 @@ export default function App() {
           >
             {/* Фоновая картинка на весь экран — смещена вниз */}
             <img
-              src="/images/first-meeting.png"
+              src="./images/first-meeting.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0"
             />
@@ -711,8 +711,8 @@ export default function App() {
                   </p>
                   <div className="flex gap-4 md:gap-6">
                     {[
-                      { id: 'handshake', img: '/images/handshake-btn.png', label: 'Рукопожатие' },
-                      { id: 'highfive', img: '/images/highfive-btn.png', label: 'Дай пять' },
+                      { id: 'handshake', img: './images/handshake-btn.png', label: 'Рукопожатие' },
+                      { id: 'highfive', img: './images/highfive-btn.png', label: 'Дай пять' },
                     ].map((option) => (
                       <button
                         key={option.id}
@@ -744,7 +744,7 @@ export default function App() {
               // После ответа — картинка на весь экран
               <>
                 <img
-                  src="/images/highfive-result.png"
+                  src="./images/highfive-result.png"
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
                 />
@@ -792,7 +792,7 @@ export default function App() {
           >
             {/* Фоновая картинка — смещена ещё ниже */}
             <img
-              src="/images/laughter.png"
+              src="./images/laughter.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
               style={{ objectPosition: 'center 70%' }}
@@ -833,7 +833,7 @@ export default function App() {
           >
             {/* Фоновая картинка — смещена ещё ниже */}
             <img
-              src="/images/together.png"
+              src="./images/together.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
               style={{ objectPosition: 'center 75%' }}
@@ -892,7 +892,7 @@ export default function App() {
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
               transition={{ duration: 1.5 }}
-              src="/images/proposal.png"
+              src="./images/proposal.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover object-center z-0"
             />
@@ -950,7 +950,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              src="/images/invitation.png" 
+              src="./images/invitation.png" 
               alt="" 
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0" 
             />
@@ -1014,7 +1014,7 @@ export default function App() {
               initial={{ scale: 1.05 }}
               animate={{ scale: 1 }}
               transition={{ duration: 1.2 }}
-              src="/images/venue.png"
+              src="./images/venue.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />
