@@ -1,6 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Компонент для плавного появления картинок
+function FadeImage({ src, alt = '', className = '', style = {} }) {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      style={{
+        ...style,
+        opacity: loaded ? 1 : 0,
+        transition: 'opacity 0.5s ease-in-out',
+      }}
+      onLoad={() => setLoaded(true)}
+    />
+  )
+}
+
 // ===== PRELOAD СИСТЕМА =====
 const allImages = [
   './images/frame.png',           // 0 - intro
@@ -116,8 +134,8 @@ function Fireflies() {
     let fireflies = []
 
     const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = canvas.parentElement.offsetWidth
+      canvas.height = canvas.parentElement.offsetHeight
     }
 
     const createFirefly = () => ({
@@ -184,8 +202,8 @@ function Snowfall() {
     let snowflakes = []
 
     const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = canvas.parentElement.offsetWidth
+      canvas.height = canvas.parentElement.offsetHeight
     }
 
     const createSnowflake = () => ({
@@ -231,21 +249,21 @@ function Snowfall() {
   return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
 }
 
-// Компонент Hearts для финального экрана — на весь экран
+// Компонент Hearts для финального экрана
 function FloatingHearts() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
       {[...Array(12)].map((_, i) => (
         <motion.div
           key={i}
           initial={{ 
-            y: '110vh', 
-            x: `${5 + i * 8}vw`,
+            y: '110%', 
+            x: `${5 + i * 8}%`,
             opacity: 0,
             scale: 0.5
           }}
           animate={{ 
-            y: '-10vh',
+            y: '-10%',
             opacity: [0, 0.6, 0.6, 0],
             scale: [0.5, 1, 1, 0.8]
           }}
@@ -439,18 +457,19 @@ export default function App() {
   }
 
   return (
-    <div 
-      className="h-screen w-full max-w-md mx-auto overflow-hidden bg-cream touch-pan-y"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Навигация точками */}
-      <div className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
+    <div className="min-h-screen w-full bg-neutral-800 flex items-center justify-center p-0 md:p-8">
+      <div 
+        className="h-screen md:h-[85vh] md:max-h-[800px] w-full md:w-[390px] md:rounded-[3rem] md:shadow-2xl md:border-[12px] md:border-neutral-900 overflow-hidden bg-cream touch-pan-y relative"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Навигация точками */}
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
         {screens.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentScreen(i)}
-            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
               currentScreen === i ? 'bg-marsala scale-125' : 'bg-chocolate/20 hover:bg-chocolate/40'
             }`}
           />
@@ -481,7 +500,7 @@ export default function App() {
               }}
               className="absolute inset-0 z-0"
             >
-              <img 
+              <FadeImage 
                 src="./images/frame.png" 
                 alt="" 
                 className="w-full h-full object-cover pointer-events-none" 
@@ -490,12 +509,12 @@ export default function App() {
             
             <Fireflies />
             
-            <div className="relative z-20 px-6 md:px-16">
+            <div className="relative z-20 px-6">
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="font-serif text-[1.5rem] text-chocolate mb-6 md:mb-10"
+                className="font-serif text-[1.5rem] text-chocolate mb-6"
               >
                 Тут кое-что намечается
               </motion.p>
@@ -514,12 +533,12 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
-              className="absolute bottom-8 left-6 md:left-16 z-20 flex flex-col items-start gap-3"
+              className="absolute bottom-8 left-6 z-20 flex flex-col items-start gap-3"
             >
               <motion.p
                 animate={{ y: [0, 5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="font-hand text-chocolate text-lg md:text-xl drop-shadow-[0_2px_4px_rgba(245,240,230,0.9)]"
+                className="font-hand text-chocolate text-lg drop-shadow-[0_2px_4px_rgba(245,240,230,0.9)]"
               >
                 листай ↓
               </motion.p>
@@ -533,7 +552,7 @@ export default function App() {
                   onClick={() => setCurrentScreen(11)}
                   className="font-serif text-sm text-chocolate/60 hover:text-marsala underline underline-offset-2 transition-colors"
                 >
-                  сразу к форме →
+                  сразу к&nbsp;форме →
                 </motion.button>
               )}
             </motion.div>
@@ -550,7 +569,7 @@ export default function App() {
             className="h-full w-full relative"
           >
             {/* Фоновая картинка на весь экран */}
-            <img
+            <FadeImage
               src="./images/story-start.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
@@ -559,11 +578,11 @@ export default function App() {
             <div className="absolute inset-0 bg-gradient-to-r from-cream/95 via-cream/70 to-transparent z-0" />
             
             {/* Контент слева */}
-            <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 max-w-[70%] md:max-w-[55%]">
+            <div className="relative z-10 h-full flex flex-col justify-center px-6 max-w-[70%]">
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-hand text-marsala text-[1.5rem] mb-8 md:mb-12"
+                className="font-hand text-marsala text-[1.5rem] mb-8"
               >
                 февраль 2023
               </motion.p>
@@ -572,13 +591,13 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mb-8 md:mb-10"
+                className="mb-8"
               >
                 <p className="font-serif text-[2rem] font-medium text-chocolate leading-tight">
                   Это история любви
                 </p>
                 <p className="font-serif text-[2rem] font-medium text-chocolate leading-tight">
-                  с первого взгляда
+                  с&nbsp;первого взгляда
                 </p>
                 <p className="font-hand text-[1.5rem] text-olive mt-3 italic">
                   Почти.
@@ -592,7 +611,7 @@ export default function App() {
                   transition={{ delay: 0.5 }}
                 >
                   <p className="font-serif text-[1.1rem] text-chocolate/80 mb-5">
-                    Она впервые увидела его фото и подумала:
+                    Она впервые увидела его фото и&nbsp;подумала:
                   </p>
                   <div className="flex flex-col gap-3">
                     {['Интересно...', 'Может быть', 'Точно нет'].map((answer, i) => (
@@ -620,7 +639,7 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   <p className="font-serif text-[1.1rem] text-chocolate/80 mb-4">
-                    Она впервые увидела его фото и подумала:
+                    Она впервые увидела его фото и&nbsp;подумала:
                   </p>
                   <p className="font-serif text-[2.5rem] font-semibold text-marsala italic">
                     «Точно нет»
@@ -641,7 +660,7 @@ export default function App() {
             className="h-full w-full relative"
           >
             {/* Фоновая картинка на весь экран — смещена вниз */}
-            <img
+            <FadeImage
               src="./images/first-meeting.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0"
@@ -650,11 +669,11 @@ export default function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/70 to-transparent z-0" />
             
             {/* Контент сверху */}
-            <div className="relative z-10 pt-16 md:pt-24 px-6 md:px-16">
+            <div className="relative z-10 pt-16 px-6">
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-hand text-marsala text-[1.5rem] mb-8 md:mb-12"
+                className="font-hand text-marsala text-[1.5rem] mb-8"
               >
                 9 декабря 2023
               </motion.p>
@@ -665,10 +684,10 @@ export default function App() {
                 transition={{ delay: 0.3 }}
               >
                 <p className="font-serif text-[1.5rem] font-medium text-chocolate mb-3">
-                  Он зашёл в квартиру
+                  Он зашёл в&nbsp;квартиру
                 </p>
                 <p className="font-serif text-[2rem] font-semibold text-chocolate leading-tight">
-                  Ещё до приветствия
+                  Ещё до&nbsp;приветствия
                 </p>
                 <p className="font-serif text-[2rem] font-semibold text-marsala leading-tight">
                   она всё поняла
@@ -689,11 +708,11 @@ export default function App() {
           >
             {!showHighfiveResult ? (
               // До ответа — чистый фон
-              <div className="h-full flex flex-col justify-center px-6 md:px-16">
+              <div className="h-full flex flex-col justify-center px-6">
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="font-hand text-marsala text-[1.5rem] mb-8 md:mb-12"
+                  className="font-hand text-marsala text-[1.5rem] mb-8"
                 >
                   минуту спустя
                 </motion.p>
@@ -709,7 +728,7 @@ export default function App() {
                   <p className="font-serif text-[1.25rem] text-chocolate/80 mb-8">
                     Нужно поздороваться. Как они это сделали?
                   </p>
-                  <div className="flex gap-4 md:gap-6">
+                  <div className="flex gap-4">
                     {[
                       { id: 'handshake', img: './images/handshake-btn.png', label: 'Рукопожатие' },
                       { id: 'highfive', img: './images/highfive-btn.png', label: 'Дай пять' },
@@ -724,10 +743,10 @@ export default function App() {
                             : 'border-chocolate hover:border-marsala'
                         } ${highfiveAnswer && highfiveAnswer !== option.id ? 'opacity-40' : ''}`}
                       >
-                        <img 
+                        <FadeImage 
                           src={option.img} 
                           alt={option.label}
-                          className="w-36 h-36 md:w-44 md:h-44 object-cover"
+                          className="w-36 h-36 object-cover"
                         />
                         {/* Надпись поверх картинки */}
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-chocolate/80 to-transparent py-3 px-2">
@@ -743,7 +762,7 @@ export default function App() {
             ) : (
               // После ответа — картинка на весь экран
               <>
-                <img
+                <FadeImage
                   src="./images/highfive-result.png"
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
@@ -753,7 +772,7 @@ export default function App() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative z-10 h-full flex flex-col justify-between py-16 px-6 md:px-16"
+                  className="relative z-10 h-full flex flex-col justify-between py-16 px-6"
                 >
                   <div>
                     <p className="font-hand text-marsala text-[1.5rem] mb-6">
@@ -763,7 +782,7 @@ export default function App() {
                       Она протянула руку,
                     </p>
                     <p className="font-serif text-[1.5rem] text-chocolate">
-                      а он — дал пять
+                      а&nbsp;он — дал пять
                     </p>
                   </div>
                   
@@ -791,7 +810,7 @@ export default function App() {
             className="h-full w-full relative"
           >
             {/* Фоновая картинка — смещена ещё ниже */}
-            <img
+            <FadeImage
               src="./images/laughter.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
@@ -801,21 +820,21 @@ export default function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/50 to-transparent z-0" />
             
             {/* Текст сверху */}
-            <div className="relative z-10 pt-16 md:pt-24 px-6 md:px-16">
+            <div className="relative z-10 pt-16 px-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
                 <p className="font-serif text-[2rem] font-medium text-chocolate mb-1">
-                  В этот момент
+                  В&nbsp;этот момент
                 </p>
                 <p className="font-serif text-[2rem] font-medium text-chocolate">
                   они засмеялись
                 </p>
-                <div className="w-16 h-0.5 bg-gold my-6 md:my-8" />
+                <div className="w-16 h-0.5 bg-gold my-6" />
                 <p className="font-serif text-[1.5rem] text-marsala italic">
-                  и с этого всё началось
+                  и&nbsp;с&nbsp;этого всё началось
                 </p>
               </motion.div>
             </div>
@@ -832,7 +851,7 @@ export default function App() {
             className="h-full w-full relative"
           >
             {/* Фоновая картинка — смещена ещё ниже */}
-            <img
+            <FadeImage
               src="./images/together.png"
               alt=""
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
@@ -842,7 +861,7 @@ export default function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-cream via-cream/60 to-transparent z-0" />
             
             {/* Контент сверху */}
-            <div className="relative z-10 pt-12 md:pt-16 px-6 md:px-16">
+            <div className="relative z-10 pt-12 px-6">
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -865,13 +884,13 @@ export default function App() {
                 transition={{ delay: 0.5 }}
               >
                 <p className="font-serif text-[1.25rem] font-medium text-chocolate mb-1">
-                  С того дня прошло 2 года
+                  С&nbsp;того дня прошло 2&nbsp;года
                 </p>
                 <p className="font-serif text-[1.1rem] text-chocolate/80 mb-4">
-                  Ни одного дня друг без друга
+                  Ни&nbsp;одного дня друг без&nbsp;друга
                 </p>
                 <p className="font-hand text-[1.75rem] text-marsala italic">
-                  И что дальше?
+                  И&nbsp;что дальше?
                 </p>
               </motion.div>
             </div>
@@ -889,8 +908,8 @@ export default function App() {
           >
             {/* Background image */}
             <motion.img
-              initial={{ scale: 1.1 }}
-              animate={{ scale: 1 }}
+              initial={{ scale: 1.1, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1.5 }}
               src="./images/proposal.png"
               alt=""
@@ -901,12 +920,12 @@ export default function App() {
             
             <Snowfall />
 
-            <div className="relative z-20 p-6 md:p-16 pb-12 md:pb-20">
+            <div className="relative z-20 p-6 pb-12">
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="font-hand text-gold text-[1.5rem] mb-6 md:mb-10"
+                className="font-hand text-gold text-[1.5rem] mb-6"
               >
                 декабрь 2025
               </motion.p>
@@ -915,7 +934,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="font-serif text-[1.25rem] text-white/85 mb-6 md:mb-8"
+                className="font-serif text-[1.25rem] text-white/85 mb-6"
               >
                 Загородный дом. Гирлянды. Танец.
               </motion.p>
@@ -956,14 +975,14 @@ export default function App() {
             />
             
             {/* Контент слева с последовательным появлением */}
-            <div className="relative z-10 px-8 md:px-16 max-w-xl">
+            <div className="relative z-10 px-8 max-w-xl">
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
                 className="font-hand text-marsala text-[1.5rem] mb-4"
               >
-                Это была история про нас
+                Это была история про&nbsp;нас
               </motion.p>
               
               <motion.p
@@ -972,7 +991,7 @@ export default function App() {
                 transition={{ delay: 1 }}
                 className="font-hand text-[2.5rem] text-olive italic mb-4"
               >
-                Софья и Сергей
+                Софья и&nbsp;Сергей
               </motion.p>
               
               <motion.p
@@ -990,10 +1009,10 @@ export default function App() {
                 transition={{ delay: 2 }}
               >
                 <p className="font-serif text-[1.25rem] text-chocolate mb-1">
-                  Для нас наступает новый этап
+                  Для&nbsp;нас наступает новый этап
                 </p>
                 <p className="font-serif text-[1.25rem] text-marsala">
-                  Хотим вступить в него с вами
+                  Хотим вступить в&nbsp;него с&nbsp;вами
                 </p>
               </motion.div>
             </div>
@@ -1011,8 +1030,8 @@ export default function App() {
           >
             {/* Background */}
             <motion.img
-              initial={{ scale: 1.05 }}
-              animate={{ scale: 1 }}
+              initial={{ scale: 1.05, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1.2 }}
               src="./images/venue.png"
               alt=""
@@ -1021,20 +1040,20 @@ export default function App() {
             <div className="absolute inset-0 bg-gradient-to-t from-chocolate/95 via-chocolate/40 to-transparent" />
 
             {/* Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-16 pb-12 md:pb-20 z-10">
+            <div className="absolute bottom-0 left-0 right-0 p-6 pb-12 z-10">
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="font-hand text-gold text-[1.5rem] mb-4"
               >
-                И мы уже знаем, где это случится
+                И&nbsp;мы уже знаем, где это случится
               </motion.p>
 
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-serif text-[3rem] font-semibold text-white leading-none mb-4 md:mb-6 drop-shadow-lg"
+                className="font-serif text-[3rem] font-semibold text-white leading-none mb-4 drop-shadow-lg"
               >
                 Due To Love
               </motion.h2>
@@ -1045,8 +1064,8 @@ export default function App() {
                 transition={{ delay: 0.4 }}
                 className="font-serif text-[1.25rem] text-white/90 max-w-lg mb-4 leading-relaxed"
               >
-                Место, где природа встречается с уютом.<br/>
-                Где можно выдохнуть и просто быть рядом.
+                Место, где природа встречается с&nbsp;уютом.<br/>
+                Где можно выдохнуть и&nbsp;просто быть рядом.
               </motion.p>
 
               <motion.div
@@ -1059,7 +1078,7 @@ export default function App() {
                   18+
                 </p>
                 <p className="font-serif text-[1rem] text-white/70">
-                  Москва, 15 км от МКАД · можно с парой
+                  Москва, 15&nbsp;км от&nbsp;МКАД · можно с&nbsp;парой
                 </p>
               </motion.div>
             </div>
@@ -1073,11 +1092,11 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full flex flex-col justify-center px-6"
           >
             {/* Countdown */}
-            <div className="mb-6 md:mb-8">
-              <p className="font-serif text-olive text-lg md:text-xl uppercase tracking-widest mb-1">
+            <div className="mb-6">
+              <p className="font-serif text-olive text-lg uppercase tracking-widest mb-1">
                 До встречи осталось
               </p>
               <p className="font-serif text-[4rem] font-semibold text-chocolate leading-none">
@@ -1087,36 +1106,36 @@ export default function App() {
             </div>
 
             {/* Контент без плиток — КРУПНЫЕ шрифты */}
-            <div className="space-y-6 md:space-y-8">
+            <div className="space-y-6">
               {/* Что надеть */}
               <div>
                 <p className="font-serif text-chocolate font-semibold text-[1.75rem] mb-2">Что надеть</p>
-                <p className="font-serif text-chocolate/80 text-[1.4rem] mb-3">Приходите в этих оттенках:</p>
+                <p className="font-serif text-chocolate/80 text-[1.4rem] mb-3">Приходите в&nbsp;этих оттенках:</p>
                 <div className="flex gap-4">
-                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
-                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
-                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
-                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
-                  <span className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 rounded-full bg-[#722F37] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 rounded-full bg-[#5C6B4A] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 rounded-full bg-[#F5F0E6] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 rounded-full bg-[#6B8E9F] border-2 border-chocolate/30" />
+                  <span className="w-12 h-12 rounded-full bg-[#3D2B1F] border-2 border-chocolate/30" />
                 </div>
-                <p className="font-hand text-olive text-[1.25rem] mt-2">Строгой проверки не будет</p>
+                <p className="font-hand text-olive text-[1.25rem] mt-2">Строгой проверки не&nbsp;будет</p>
               </div>
               
               {/* Подарки */}
               <div>
                 <p className="font-serif text-chocolate font-semibold text-[1.75rem] mb-2">Подарки</p>
                 <p className="font-serif text-chocolate/80 text-[1.4rem]">
-                  Мы мечтаем о своём жилье. Благодарны любому вкладу, который приблизит нас к этому.
+                  Мы&nbsp;мечтаем о&nbsp;своём жилье. Благодарны любому вкладу, который приблизит нас к&nbsp;этому.
                 </p>
               </div>
               
               {/* Что взять */}
               <div>
-                <p className="font-serif text-chocolate font-semibold text-[1.75rem] mb-2">Что взять с собой</p>
+                <p className="font-serif text-chocolate font-semibold text-[1.75rem] mb-2">Что взять с&nbsp;собой</p>
                 <p className="font-serif text-chocolate/80 text-[1.4rem]">
-                  Хорошее настроение, сменную обувь для танцев и что-то тёплое на вечер.
+                  Хорошее настроение, сменную обувь для танцев и&nbsp;что-то тёплое на&nbsp;вечер.
                 </p>
-                <p className="font-hand text-olive text-[1.25rem] mt-2">Зонты, аптечки и всё на случай «а вдруг» — у нас есть</p>
+                <p className="font-hand text-olive text-[1.25rem] mt-2">Зонты, аптечки и&nbsp;всё на&nbsp;случай «а&nbsp;вдруг» — у&nbsp;нас есть</p>
               </div>
             </div>
           </motion.div>
@@ -1129,16 +1148,16 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16"
+            className="h-full w-full flex flex-col justify-center px-6"
           >
-            <h2 className="font-hand text-marsala text-[2.5rem] mb-5 md:mb-6">Шпаргалка</h2>
+            <h2 className="font-hand text-marsala text-[2.5rem] mb-5">Шпаргалка</h2>
 
-            <div className="grid grid-cols-2 gap-4 md:gap-5">
+            <div className="grid grid-cols-2 gap-4">
               {/* Когда */}
               <div className="bg-white rounded-xl p-5 shadow-sm">
                 <p className="font-serif text-olive text-sm uppercase tracking-wide mb-2">Когда</p>
                 <p className="font-serif text-chocolate text-[1.25rem] font-semibold leading-tight">
-                  30 августа
+                  30&nbsp;августа
                 </p>
                 <p className="font-serif text-chocolate text-[1rem]">суббота</p>
                 <p className="font-serif text-chocolate/70 text-[0.9rem] mt-2">14:30 — 22:30</p>
@@ -1214,7 +1233,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-full w-full flex flex-col justify-center px-6 md:px-16 relative"
+            className="h-full w-full flex flex-col justify-center px-6 relative"
           >
             {!formSubmitted ? (
               <>
@@ -1224,7 +1243,7 @@ export default function App() {
                 
                 {/* Дедлайн — крупный, стилизованный */}
                 <p className="font-hand text-marsala text-[1.25rem] mb-6 border-b-2 border-marsala/30 pb-2 inline-block">
-                  Ждём ответа до 1 мая
+                  Ждём ответа до&nbsp;1&nbsp;мая
                 </p>
 
                 {/* Scale 1-7 */}
@@ -1237,7 +1256,7 @@ export default function App() {
                         style={{
                           backgroundColor: formData.rating === num ? getRatingColor(num) : 'transparent',
                         }}
-                        className={`w-10 h-10 md:w-11 md:h-11 rounded-lg border-2 border-chocolate font-serif text-base font-semibold transition-all ${
+                        className={`w-10 h-10 rounded-lg border-2 border-chocolate font-serif text-base font-semibold transition-all ${
                           formData.rating === num ? 'text-cream' : 'text-chocolate'
                         }`}
                       >
@@ -1277,7 +1296,7 @@ export default function App() {
                         onChange={(e) => setFormData({ ...formData, withGuest: e.target.checked })}
                         className="w-5 h-5"
                       />
-                      С парой
+                      С&nbsp;парой
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer font-serif text-chocolate">
                       <input
@@ -1395,7 +1414,7 @@ export default function App() {
                   </motion.p>
                   <p className="font-hand text-olive text-[1.5rem] mb-6">
                     {formData.rating >= 5 
-                      ? 'Будем рады разделить этот день с вами!' 
+                      ? 'Будем рады разделить этот день с\u00a0вами!' 
                       : 'Если планы изменятся — возвращайтесь'}
                   </p>
                   <motion.p
@@ -1404,7 +1423,7 @@ export default function App() {
                     transition={{ delay: 0.5 }}
                     className="font-hand text-marsala text-[1.25rem]"
                   >
-                    Софья и Сергей
+                    Софья и&nbsp;Сергей
                   </motion.p>
                 </motion.div>
               </>
@@ -1413,6 +1432,7 @@ export default function App() {
         )}
 
       </AnimatePresence>
+      </div>
     </div>
   )
 }
