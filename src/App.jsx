@@ -584,7 +584,7 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 className="font-hand text-marsala text-[1.5rem] mb-8"
               >
-                февраль 2023
+                май 2023
               </motion.p>
 
               <motion.div
